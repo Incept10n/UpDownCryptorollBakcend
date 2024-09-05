@@ -11,6 +11,7 @@ DotNetEnv.Env.Load();
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION");
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 builder.Services.AddApplicationDbContext(connectionString);
 builder.Services.AddAutoMapper(typeof(BllMapperProfile), typeof(PlMapperProfile));
 
