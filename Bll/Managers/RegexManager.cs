@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using Bll.Enums;
+using Dal.Enums;
 
 namespace Bll.Managers;
 

@@ -1,10 +1,16 @@
-using Bll.Enums;
+using Bll.Dtos;
+using Bll.Exceptions;
 using Bll.Managers;
+using Dal.DatabaseContext;
+using Dal.Entities;
+using Dal.Enums;
 
 namespace Bll.Services;
 
 public class GameLogicService(
-    HttpClient httpClient, RegexManager regexManager)
+    HttpClient httpClient,
+    RegexManager regexManager,
+    ApplicationDbContext applicationDbContext)
 {
     public async Task<float> GetCurrentPrice(Coin coin)
     {
@@ -33,9 +39,42 @@ public class GameLogicService(
         }
         catch (HttpRequestException e)
         {
-            Console.WriteLine($"Request error: {e.Message}");
             return -1;
         }
+    }
+
+    public void CreateMatch(MatchCreationDto matchCreationDto)
+    {
+        var user = applicationDbContext.Users.FirstOrDefault(user =>
+            user.WalletAddress == matchCreationDto.WalletAddress);
+
+        if (user is null)
+        {
+            throw new UserNotFoundException($"user with wallet address {matchCreationDto.WalletAddress} was not found");
+        }
+
+        var match = new Match
+        {
+            User = user,
+            Coin = matchCreationDto.Coin,
+
+            EntryTime = DateTimeOffset.Now.ToUniversalTime(),
+            EntryPrice = matchCreationDto.EntryPrice,
+
+            Prediction = matchCreationDto.PredictionValue,
+            PredictionTimeframe = matchCreationDto.PredictionTimeframe,
+            PredictionAmount = matchCreationDto.PredictionAmount,
+
+            ExitTime = null,
+            ExitPrice = null,
+
+            Res = null,
+            ResultPayout = null,
+        };
+
+        applicationDbContext.Matches.Add(match);
+
+        applicationDbContext.SaveChanges();
     }
     
     private string GetUrlForCoin(Coin coin)

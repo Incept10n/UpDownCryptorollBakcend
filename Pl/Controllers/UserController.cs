@@ -23,11 +23,8 @@ public class UserController(
     [HttpPut]
     public IActionResult ChangeUserName(string walletAddress, UserChangeNameModel userChangeNameModel)
     {
-        if (userService.ChangeUserName(walletAddress, mapper.Map<UserChangeNameDto>(userChangeNameModel)))
-        {
-            return Ok("the username has successfully being changed");
-        }
+        userService.ChangeUserName(walletAddress, mapper.Map<UserChangeNameDto>(userChangeNameModel));
 
-        return NotFound("user with this name was not found");
+        return Ok();
     }
 }

@@ -1,4 +1,4 @@
-namespace Bll.Enums;
+namespace Dal.Enums;
 
 public enum Coin
 {

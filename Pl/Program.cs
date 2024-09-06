@@ -1,6 +1,9 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Bll.Extensions;
 using Bll.MapperConfiguration;
 using Dal.Extensions;
+using UpDownCryptorollBackend.Filters;
 using UpDownCryptorollBackend.MapperConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +13,13 @@ var builder = WebApplication.CreateBuilder(args);
 DotNetEnv.Env.Load();
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION");
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<CustomExceptionFilter>();
+}).AddJsonOptions(opts =>
+{
+    opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 builder.Services.AddHttpClient();
 builder.Services.AddApplicationDbContext(connectionString);
 builder.Services.AddAutoMapper(typeof(BllMapperProfile), typeof(PlMapperProfile));

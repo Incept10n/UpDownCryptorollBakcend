@@ -1,5 +1,6 @@
 using AutoMapper;
 using Bll.Dtos;
+using Bll.Exceptions;
 using Dal.DatabaseContext;
 using Dal.Entities;
 
@@ -20,7 +21,8 @@ public class UserService(
             WalletAddress = walletAddress,
             CurrentBalance = 0,
             LoginStreakCount = 0,
-            Name = "Unknown player"
+            Name = "Unknown player",
+            CurrentMatchId = null,
         };
 
         applicationDbContext.Users.Add(newUser);
@@ -29,19 +31,17 @@ public class UserService(
         return mapper.Map<UserDto>(newUser);
     }
 
-    public bool ChangeUserName(string walletAddress, UserChangeNameDto userChangeNameDto)
+    public void ChangeUserName(string walletAddress, UserChangeNameDto userChangeNameDto)
     {
         var user = applicationDbContext.Users.FirstOrDefault(user => user.WalletAddress == walletAddress);
 
         if (user is null)
         {
-            return false;
+            throw new UserNotFoundException($"user with wallet address: {walletAddress} was not found");
         }
 
         user.Name = userChangeNameDto.newName;
 
         applicationDbContext.SaveChanges();
-
-        return true;
     }
 }
