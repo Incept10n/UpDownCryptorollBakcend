@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Bll.Extensions;
 using Bll.MapperConfiguration;
 using Dal.Extensions;
+using Quartz;
 using UpDownCryptorollBackend.Filters;
 using UpDownCryptorollBackend.MapperConfiguration;
 
@@ -23,6 +24,9 @@ builder.Services.AddControllers(options =>
 builder.Services.AddHttpClient();
 builder.Services.AddApplicationDbContext(connectionString);
 builder.Services.AddAutoMapper(typeof(BllMapperProfile), typeof(PlMapperProfile));
+
+builder.Services.AddQuartz();
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = false);
 
 builder.Services.AddBll();
 

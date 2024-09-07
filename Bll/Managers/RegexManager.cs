@@ -12,7 +12,7 @@ public class RegexManager
             Coin.Btc => FindBitcoinPriceRegex(),
             Coin.Eth => FindEthereumPriceRegex(),
             Coin.Ton => FindTonPriceRegex(),
-            _ => FindBitcoinPriceRegex(), // Default case for unknown coin types
+            _ => FindBitcoinPriceRegex(),
         };
     }
 

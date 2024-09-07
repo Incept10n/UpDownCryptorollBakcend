@@ -6,7 +6,7 @@ namespace UpDownCryptorollBackend.Controllers;
 
 [ApiController]
 [Route("/livePrice")]
-public class PriceController(GameLogicService gameLogicService) : ControllerBase
+public class PriceController(CurrentPriceService currentPriceService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetPrice(string sym)
@@ -16,6 +16,6 @@ public class PriceController(GameLogicService gameLogicService) : ControllerBase
             return BadRequest("Uknown coin type");
         }
         
-        return Ok(await gameLogicService.GetCurrentPrice(inputCoin));
+        return Ok(await currentPriceService.GetCurrentPrice(inputCoin));
     }
 }

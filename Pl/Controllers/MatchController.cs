@@ -13,9 +13,9 @@ public class MatchController(
     IMapper mapper) : ControllerBase
 {
     [HttpPost("createMatch")]
-    public IActionResult MakePrediction(MatchCreationModel matchCreationModel)
+    public async Task<IActionResult> MakePrediction(MatchCreationModel matchCreationModel)
     {
-        gameLogicService.CreateMatch(mapper.Map<MatchCreationDto>(matchCreationModel));
+        await gameLogicService.CreateMatch(mapper.Map<MatchCreationDto>(matchCreationModel));
         
         return Created();
     }

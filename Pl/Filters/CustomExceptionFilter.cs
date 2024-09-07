@@ -11,6 +11,8 @@ public class CustomExceptionFilter : IExceptionFilter
         var statusCode = context.Exception switch
         {
             UserNotFoundException => StatusCodes.Status404NotFound,
+            UnknownCoinTypeException => StatusCodes.Status400BadRequest,
+            MatchNotFoundException => StatusCodes.Status404NotFound,
             _ => StatusCodes.Status500InternalServerError
         };
 

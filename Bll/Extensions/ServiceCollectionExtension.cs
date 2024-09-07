@@ -1,6 +1,7 @@
 using Bll.Managers;
 using Bll.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Quartz;
 
 namespace Bll.Extensions;
 
@@ -10,6 +11,8 @@ public static class ServiceCollectionExtension
     {
         serviceCollection.AddScoped<UserService>();
         serviceCollection.AddScoped<GameLogicService>();
+        serviceCollection.AddScoped<CurrentPriceService>();
         serviceCollection.AddScoped<RegexManager>();
+        serviceCollection.AddScoped<JobScheduleService>();
     }
 }
