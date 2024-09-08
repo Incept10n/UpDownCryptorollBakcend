@@ -21,15 +21,21 @@ public class GameLogicService(
             throw new UserNotFoundException($"user with wallet address {matchCreationDto.WalletAddress} was not found");
         }
 
-        var entryPrice = currentPriceService.GetCurrentPrice(Coin.Btc);
-
+        if (matchCreationDto.PredictionAmount <= 0
+            || user.CurrentBalance - matchCreationDto.PredictionAmount < 0)
+        {
+            throw new InvalidBetAmountException($"your bet of {matchCreationDto.PredictionAmount} is invalid");
+        }
+        
+        ValidateDataForMatch(matchCreationDto);
+        
         var match = new Match
         {
             User = user,
             Coin = matchCreationDto.Coin,
         
             EntryTime = DateTimeOffset.Now.ToUniversalTime(),
-            EntryPrice = entryPrice,
+            EntryPrice = currentPriceService.GetCurrentPrice(Coin.Btc),
         
             Prediction = matchCreationDto.PredictionValue,
             PredictionTimeframe = matchCreationDto.PredictionTimeframe,
@@ -43,10 +49,24 @@ public class GameLogicService(
         };
         
         applicationDbContext.Matches.Add(match);
-        
         await applicationDbContext.SaveChangesAsync();
         
-        await jobScheduleService.CompleteMatchResult(match.Id, TimeSpan.FromSeconds(15));
+        user.CurrentMatchId = match.Id;
+        await applicationDbContext.SaveChangesAsync();
+
+        // this decides the result of a job after some delay
+        await jobScheduleService.CompleteMatchResult(match.Id, match.PredictionTimeframe);
     }
-    
+
+    private void ValidateDataForMatch(MatchCreationDto matchCreationDto)
+    {
+        if (matchCreationDto.PredictionTimeframe != TimeSpan.FromSeconds(15)
+            && matchCreationDto.PredictionTimeframe != TimeSpan.FromMinutes(30)
+            && matchCreationDto.PredictionTimeframe != TimeSpan.FromHours(4)
+            && matchCreationDto.PredictionTimeframe != TimeSpan.FromHours(12))
+        {
+            throw new WrongPredictionTimeframeException(
+                $"timeframe of {matchCreationDto.PredictionTimeframe.TotalSeconds} seconds is not valid");
+        }
+    }
 }

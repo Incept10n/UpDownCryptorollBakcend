@@ -7,11 +7,7 @@ using Quartz;
 using UpDownCryptorollBackend.Filters;
 using UpDownCryptorollBackend.MapperConfiguration;
 
-// TODO: test create match endpoint for low (15sec timeframe and once/twice for big one (30 mins)
-// TODO: valid timeframe (one of 3: 30mins, 4hrs, 12hrs) checking and other data validation for MatchCreationModel
-// TODO: add bet relative to price checking when trying to create a match (you can't bet more than you have)
 // TODO: add player daily login multiplier when calculating result of the match
-// TODO: check all other validation of all endpoints
 
 var builder = WebApplication.CreateBuilder(args);
 
