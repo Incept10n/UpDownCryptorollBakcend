@@ -3,6 +3,7 @@ using System;
 using Dal.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Dal.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240908155724_CreatePricesTable")]
+    partial class CreatePricesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,26 +90,6 @@ namespace Dal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Prices");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Coin = 0,
-                            Value = 0f
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Coin = 1,
-                            Value = 0f
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Coin = 2,
-                            Value = 0f
-                        });
                 });
 
             modelBuilder.Entity("Dal.Entities.User", b =>

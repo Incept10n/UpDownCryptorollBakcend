@@ -9,13 +9,13 @@ namespace UpDownCryptorollBackend.Controllers;
 public class PriceController(CurrentPriceService currentPriceService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetPrice(string sym)
+    public IActionResult  GetPrice(string sym)
     {
         if (!Enum.TryParse(sym, true, out Coin inputCoin))
         {
             return BadRequest("Uknown coin type");
         }
         
-        return Ok(await currentPriceService.GetCurrentPrice(inputCoin));
+        return Ok(currentPriceService.GetCurrentPrice(inputCoin));
     }
 }

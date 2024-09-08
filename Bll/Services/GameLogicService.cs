@@ -21,7 +21,7 @@ public class GameLogicService(
             throw new UserNotFoundException($"user with wallet address {matchCreationDto.WalletAddress} was not found");
         }
 
-        var entryPrice = await currentPriceService.GetCurrentPrice(Coin.Btc);
+        var entryPrice = currentPriceService.GetCurrentPrice(Coin.Btc);
 
         var match = new Match
         {

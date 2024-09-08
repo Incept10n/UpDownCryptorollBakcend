@@ -23,7 +23,7 @@ public class SetMatchResultJob(
             throw new MatchNotFoundException($"the match with id {matchId} was not found");
         }
 
-        var currentExitPrice = await currentPriceService.GetCurrentPrice(match.Coin);
+        var currentExitPrice = currentPriceService.GetCurrentPrice(match.Coin);
         
         match.ExitTime = DateTimeOffset.Now.ToUniversalTime();
         match.ExitPrice = currentExitPrice;

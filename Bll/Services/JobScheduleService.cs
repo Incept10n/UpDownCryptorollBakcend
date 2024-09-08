@@ -22,4 +22,21 @@ public class JobScheduleService(ISchedulerFactory schedulerFactory)
         
         scheduler.ScheduleJob(jobDetail, trigger);
     }
+
+    public async Task SetUpdatingLivePrice()
+    {
+        var scheduler = await schedulerFactory.GetScheduler();
+        
+        var currentPriceUpdateJob = JobBuilder.Create<UpdateLivePriceJob>()
+            .WithIdentity("livePriceUpdater", "prices")
+            .Build();
+
+        var currentPriceUpdateTrigger = TriggerBuilder.Create()
+            .WithIdentity("livePriceTrigger", "prices")
+            .StartNow()
+            .WithSimpleSchedule(x => x.WithIntervalInSeconds(1).RepeatForever())
+            .Build();
+
+        scheduler.ScheduleJob(currentPriceUpdateJob, currentPriceUpdateTrigger);
+    }
 }
