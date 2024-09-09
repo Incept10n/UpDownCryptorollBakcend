@@ -10,7 +10,8 @@ namespace UpDownCryptorollBackend.Controllers;
 [Route("/match")]
 public class MatchController(
     GameLogicService gameLogicService, 
-    IMapper mapper) : ControllerBase
+    IMapper mapper,
+    UserService userService) : ControllerBase
 {
     [HttpPost("createMatch")]
     public async Task<IActionResult> MakePrediction(MatchCreationModel matchCreationModel)
@@ -18,5 +19,11 @@ public class MatchController(
         await gameLogicService.CreateMatch(mapper.Map<MatchCreationDto>(matchCreationModel));
         
         return Created();
+    }
+
+    [HttpGet("current")]
+    public IActionResult GetWhetherUserHasCurrentMatch(string walletAddress)
+    {
+        return Ok(new { inMatch = userService.IsCurrentlyInMatch(walletAddress) });
     }
 }

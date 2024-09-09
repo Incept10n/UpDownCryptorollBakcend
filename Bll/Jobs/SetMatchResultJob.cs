@@ -44,16 +44,22 @@ public class SetMatchResultJob(
 
     private float GetMatchResultPayout(Match match)
     {
+        var user = applicationDbContext.Users.FirstOrDefault(user => user.Id == match.UserId);
+
+        if (user is null) throw new UserNotFoundException($"user for match with id: {match.UserId} was not found");
+
+        var dailyBonus = 1f + 0.3f * user.LoginStreakCount;
+        
         if (match.Res != ResultStatus.Win) return 0 - match.PredictionAmount;
 
         if (match.PredictionTimeframe == TimeSpan.FromSeconds(15))
-            return match.PredictionAmount * 2f - match.PredictionAmount;
+            return match.PredictionAmount * (2f + dailyBonus) - match.PredictionAmount;
         if (match.PredictionTimeframe == TimeSpan.FromMinutes(30))
-            return match.PredictionAmount * TimeFrameMultiplier.ThirtyMinutesMultiplier - match.PredictionAmount;
+            return match.PredictionAmount * (TimeFrameMultiplier.ThirtyMinutesMultiplier + dailyBonus) - match.PredictionAmount;
         if (match.PredictionTimeframe == TimeSpan.FromHours(4)) 
-            return match.PredictionAmount * TimeFrameMultiplier.FourHoursMultiplier - match.PredictionAmount;
+            return match.PredictionAmount * (TimeFrameMultiplier.FourHoursMultiplier + dailyBonus) - match.PredictionAmount;
         if (match.PredictionTimeframe == TimeSpan.FromHours(12)) 
-            return match.PredictionAmount * TimeFrameMultiplier.TwelveHoursMultiplier - match.PredictionAmount;
+            return match.PredictionAmount * (TimeFrameMultiplier.TwelveHoursMultiplier + dailyBonus) - match.PredictionAmount;
 
         return match.PredictionAmount * 0f;
     }

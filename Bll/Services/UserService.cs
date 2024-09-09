@@ -8,21 +8,30 @@ namespace Bll.Services;
 
 public class UserService(
     ApplicationDbContext applicationDbContext,
+    RewardsService rewardsService,
     IMapper mapper)
 {
     public UserDto GetUserInfo(string walletAddress)
     {
         var user =  applicationDbContext.Users.FirstOrDefault(user => user.WalletAddress == walletAddress);
 
-        if (user is not null) return mapper.Map<UserDto>(user);
+        if (user is not null)
+        {
+            rewardsService.CalculateUserLoggedInReward(user);
+            return mapper.Map<UserDto>(user);
+        }
         
         var newUser = new User
         {
             WalletAddress = walletAddress,
             CurrentBalance = 0,
-            LoginStreakCount = 0,
             Name = "Unknown player",
             CurrentMatchId = null,
+            
+            LoginStreakCount = 1,
+            LastRewardedTime = DateTimeOffset.Now.ToUniversalTime(),
+            LastLoginTime = DateTimeOffset.Now.ToUniversalTime(),
+            IsDailyRewardCollected = false,
         };
 
         applicationDbContext.Users.Add(newUser);
@@ -39,9 +48,23 @@ public class UserService(
         {
             throw new UserNotFoundException($"user with wallet address: {walletAddress} was not found");
         }
+        
+        rewardsService.CalculateUserLoggedInReward(user);
 
         user.Name = userChangeNameDto.newName;
 
         applicationDbContext.SaveChanges();
+    }
+
+    public bool IsCurrentlyInMatch(string walletAddress)
+    {
+        var user = applicationDbContext.Users.FirstOrDefault(user => user.WalletAddress == walletAddress);
+
+        if (user is null)
+        {
+            throw new UserNotFoundException($"user with wallet address: {walletAddress} was not found");
+        }
+
+        return user.CurrentMatchId is not null;
     }
 }

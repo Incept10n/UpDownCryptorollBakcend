@@ -13,6 +13,7 @@ public static class ServiceCollectionExtension
         serviceCollection.AddScoped<CurrentPriceService>();
         serviceCollection.AddScoped<RegexManager>();
         serviceCollection.AddScoped<JobScheduleService>();
+        serviceCollection.AddScoped<RewardsService>();
     }
 
 }

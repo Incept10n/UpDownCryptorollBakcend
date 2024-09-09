@@ -21,5 +21,12 @@ public class PlMapperProfile : Profile
             .ForMember(dest => dest.PredictionAmount, opts => opts.MapFrom(src => src.PredictionAmount))
             .ForMember(dest => dest.PredictionTimeframe, opts => opts.MapFrom(src => src.PredictionTimeframe))
             .ForMember(dest => dest.PredictionValue, opts => opts.MapFrom(src => src.PredictionValue));
+
+        CreateMap<RewardStatusDto, RewardStatusModel>()
+            .ForMember(dest => dest.UserName, opts => opts.MapFrom(src => src.UserName))
+            .ForMember(dest => dest.LoginStreakCount, opts => opts.MapFrom(src => src.LoginStreakCount))
+            .ForMember(dest => dest.LastRewardedTime, opts => opts.MapFrom(src => src.LastRewardedTime))
+            .ForMember(dest => dest.LastLoginTime, opts => opts.MapFrom(src => src.LastLoginTime))
+            .ForMember(dest => dest.isRewardCollected, opts => opts.MapFrom(src => src.IsRewardCollected));
     }
 }

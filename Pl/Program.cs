@@ -7,8 +7,6 @@ using Quartz;
 using UpDownCryptorollBackend.Filters;
 using UpDownCryptorollBackend.MapperConfiguration;
 
-// TODO: add player daily login multiplier when calculating result of the match
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
