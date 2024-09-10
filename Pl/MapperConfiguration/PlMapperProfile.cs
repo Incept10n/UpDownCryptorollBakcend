@@ -28,5 +28,18 @@ public class PlMapperProfile : Profile
             .ForMember(dest => dest.LastRewardedTime, opts => opts.MapFrom(src => src.LastRewardedTime))
             .ForMember(dest => dest.LastLoginTime, opts => opts.MapFrom(src => src.LastLoginTime))
             .ForMember(dest => dest.isRewardCollected, opts => opts.MapFrom(src => src.IsRewardCollected));
+        
+        
+        CreateMap<MatchDto, MatchModel>()
+            .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Coin, opts => opts.MapFrom(src => src.Coin))
+            .ForMember(dest => dest.EntryDateTime, opts => opts.MapFrom(src => src.EntryDateTime))
+            .ForMember(dest => dest.EntryPrice, opts => opts.MapFrom(src => src.EntryPrice))
+            .ForMember(dest => dest.ExitDateTIme, opts => opts.MapFrom(src => src.ExitDateTIme))
+            .ForMember(dest => dest.ExitPrice, opts => opts.MapFrom(src => src.ExitPrice))
+            .ForMember(dest => dest.PredictionValue, opts => opts.MapFrom(src => src.PredictionValue))
+            .ForMember(dest => dest.PredictionTimeframe, opts => opts.MapFrom(src => src.PredictionTimeframe))
+            .ForMember(dest => dest.ResultStatus, opts => opts.MapFrom(src => src.ResultStatus))
+            .ForMember(dest => dest.ResultPayout, opts => opts.MapFrom(src => src.ResultPayout));
     }
 }

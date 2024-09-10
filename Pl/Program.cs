@@ -7,6 +7,8 @@ using Quartz;
 using UpDownCryptorollBackend.Filters;
 using UpDownCryptorollBackend.MapperConfiguration;
 
+// TODO (FIX): check for current match and dissallow entering another match when there is one in progress 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

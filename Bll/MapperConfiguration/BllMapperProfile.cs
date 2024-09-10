@@ -13,5 +13,17 @@ public class BllMapperProfile : Profile
             .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
             .ForMember(dest => dest.currentBalance, opts => opts.MapFrom(src => src.CurrentBalance))
             .ForMember(dest => dest.LoginStreakCount, opts => opts.MapFrom(src => src.LoginStreakCount));
+
+        CreateMap<Match, MatchDto>()
+            .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Coin, opts => opts.MapFrom(src => src.Coin))
+            .ForMember(dest => dest.EntryDateTime, opts => opts.MapFrom(src => src.EntryTime))
+            .ForMember(dest => dest.EntryPrice, opts => opts.MapFrom(src => src.EntryPrice))
+            .ForMember(dest => dest.ExitDateTIme, opts => opts.MapFrom(src => src.ExitTime))
+            .ForMember(dest => dest.ExitPrice, opts => opts.MapFrom(src => src.ExitPrice))
+            .ForMember(dest => dest.PredictionValue, opts => opts.MapFrom(src => src.Prediction))
+            .ForMember(dest => dest.PredictionTimeframe, opts => opts.MapFrom(src => src.PredictionTimeframe))
+            .ForMember(dest => dest.ResultStatus, opts => opts.MapFrom(src => src.Res))
+            .ForMember(dest => dest.ResultPayout, opts => opts.MapFrom(src => src.ResultPayout));
     }
 }
