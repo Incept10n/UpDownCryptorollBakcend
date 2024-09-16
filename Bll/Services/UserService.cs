@@ -24,7 +24,7 @@ public class UserService(
         var newUser = new User
         {
             WalletAddress = walletAddress,
-            CurrentBalance = 0,
+            CurrentBalance = 10000,
             Name = "Unknown player",
             CurrentMatchId = null,
             

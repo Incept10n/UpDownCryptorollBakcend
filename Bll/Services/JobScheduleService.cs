@@ -17,7 +17,7 @@ public class JobScheduleService(ISchedulerFactory schedulerFactory)
         
         var trigger = TriggerBuilder.Create()
             .WithIdentity($"match{matchId}ResultTrigger", "resultMatchmaking")
-            .StartAt(DateBuilder.FutureDate(predictionTimeframe.Seconds, IntervalUnit.Second))
+            .StartAt(DateBuilder.FutureDate((int)predictionTimeframe.TotalSeconds, IntervalUnit.Second))
             .Build();
         
         scheduler.ScheduleJob(jobDetail, trigger);

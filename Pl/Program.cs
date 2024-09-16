@@ -3,6 +3,7 @@ using Bll.Extensions;
 using Bll.MapperConfiguration;
 using Bll.Services;
 using Dal.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using Quartz;
 using UpDownCryptorollBackend.Filters;
 using UpDownCryptorollBackend.MapperConfiguration;
@@ -27,6 +28,25 @@ builder.Services.AddHttpClient();
 builder.Services.AddApplicationDbContext(connectionString);
 builder.Services.AddAutoMapper(typeof(BllMapperProfile), typeof(PlMapperProfile));
 
+builder.Services.AddCors(options =>
+    {
+        // options.AddPolicy("AllowSpecificOrigins",
+        //     builder =>
+        //     {
+        //         builder.WithOrigins("http://172.27.33.20:5173") // Add your React frontend URL
+        //                .AllowAnyHeader()
+        //                .AllowAnyMethod()
+        //                .AllowCredentials(); // Allow cookies or authentication tokens if needed
+        //     });
+        options.AddPolicy("AllowAll",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowAnyHeader();
+                    });
+    });
+
 builder.Services.AddQuartz();
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = false);
 
@@ -45,5 +65,7 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseCors("AllowAll");
 
 app.Run();
