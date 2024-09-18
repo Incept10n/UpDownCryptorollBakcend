@@ -41,5 +41,12 @@ public class PlMapperProfile : Profile
             .ForMember(dest => dest.PredictionTimeframe, opts => opts.MapFrom(src => src.PredictionTimeframe))
             .ForMember(dest => dest.ResultStatus, opts => opts.MapFrom(src => src.ResultStatus))
             .ForMember(dest => dest.ResultPayout, opts => opts.MapFrom(src => src.ResultPayout));
+        
+        CreateMap<CurrentMatchDto, CurrentMatchModel>()
+            .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Bet, opts => opts.MapFrom(src => src.Bet))
+            .ForMember(dest => dest.Coin, opts => opts.MapFrom(src => src.Coin))
+            .ForMember(dest => dest.Prediction, opts => opts.MapFrom(src => src.Prediction))
+            .ForMember(dest => dest.TimeRemaining, opts => opts.MapFrom(src => src.TimeRemaining));
     }
 }

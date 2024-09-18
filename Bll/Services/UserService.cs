@@ -55,16 +55,4 @@ public class UserService(
 
         applicationDbContext.SaveChanges();
     }
-
-    public bool IsCurrentlyInMatch(string walletAddress)
-    {
-        var user = applicationDbContext.Users.FirstOrDefault(user => user.WalletAddress == walletAddress);
-
-        if (user is null)
-        {
-            throw new UserNotFoundException($"user with wallet address: {walletAddress} was not found");
-        }
-
-        return user.CurrentMatchId is not null;
-    }
 }

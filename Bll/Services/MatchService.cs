@@ -4,7 +4,6 @@ using Bll.Exceptions;
 using Dal.DatabaseContext;
 using Dal.Entities;
 using Dal.Enums;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 
 namespace Bll.Services;
 
@@ -80,6 +79,30 @@ public class MatchService(
             .Take(limit)
             .Select(match => mapper.Map<MatchDto>(match))
             .ToList();
+    }
+
+    public CurrentMatchDto GetCurrentMatch(string walletAddress)
+    {
+        var user = applicationDbContext.Users.FirstOrDefault(user => user.WalletAddress == walletAddress);
+
+        if (user is null)
+        {
+            throw new UserNotFoundException($"user with wallet address {walletAddress} was not found");
+        }
+
+        if (user.CurrentMatchId is null)
+        {
+            throw new MatchNotFoundException($"user with wallet address {walletAddress} is not currently in a match");
+        }
+
+        var currentMatch = applicationDbContext.Matches.FirstOrDefault(match => match.Id == user.CurrentMatchId);
+
+        if (currentMatch is null)
+        {
+            throw new MatchNotFoundException($"match with id {user.CurrentMatchId} was not found");
+        }
+
+        return mapper.Map<CurrentMatchDto>(currentMatch);
     }
 
     private void ValidateDataForMatch(MatchCreationDto matchCreationDto)

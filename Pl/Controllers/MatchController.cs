@@ -10,8 +10,7 @@ namespace UpDownCryptorollBackend.Controllers;
 [Route("/match")]
 public class MatchController(
     MatchService matchService, 
-    IMapper mapper,
-    UserService userService) : ControllerBase
+    IMapper mapper) : ControllerBase
 {
     [HttpPost("createMatch")]
     public async Task<IActionResult> MakePrediction(MatchCreationModel matchCreationModel)
@@ -24,7 +23,7 @@ public class MatchController(
     [HttpGet("current")]
     public IActionResult GetWhetherUserHasCurrentMatch(string walletAddress)
     {
-        return Ok(new { inMatch = userService.IsCurrentlyInMatch(walletAddress) });
+        return Ok(mapper.Map<CurrentMatchModel>(matchService.GetCurrentMatch(walletAddress)));
     }
 
     [HttpGet("history")]
