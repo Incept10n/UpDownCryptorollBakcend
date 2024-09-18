@@ -23,7 +23,16 @@ public class MatchController(
     [HttpGet("current")]
     public IActionResult GetWhetherUserHasCurrentMatch(string walletAddress)
     {
-        return Ok(mapper.Map<CurrentMatchModel>(matchService.GetCurrentMatch(walletAddress)));
+        try
+        {
+            var matchDto = matchService.GetCurrentMatch(walletAddress);
+            return Ok(mapper.Map<CurrentMatchModel>(matchDto));
+        }
+        catch (Exception e)
+        {
+            return Ok(new { Id = -1 });
+        }
+        
     }
 
     [HttpGet("history")]
