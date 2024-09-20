@@ -47,6 +47,8 @@ public class PlMapperProfile : Profile
             .ForMember(dest => dest.Bet, opts => opts.MapFrom(src => src.Bet))
             .ForMember(dest => dest.Coin, opts => opts.MapFrom(src => src.Coin))
             .ForMember(dest => dest.Prediction, opts => opts.MapFrom(src => src.Prediction))
-            .ForMember(dest => dest.TimeRemaining, opts => opts.MapFrom(src => src.TimeRemaining));
+            .ForMember(dest => dest.TimeRemaining, opts => opts.MapFrom(src => src.TimeRemaining))
+            .ForMember(dest => dest.WinningMultiplier, opts => opts.MapFrom(src => src.WinningMultiplier))
+            .ForMember(dest => dest.EntryPrice, opts => opts.MapFrom(src => src.EntryPrice));
     }
 }

@@ -12,4 +12,5 @@ public class User
     public DateTimeOffset LastRewardedTime { get; set; }
     public DateTimeOffset LastLoginTime { get; set; }
     public bool IsDailyRewardCollected { get; set; }
+    public bool IsLastMatchCollected { get; set; }
 }

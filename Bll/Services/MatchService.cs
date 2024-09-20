@@ -1,4 +1,5 @@
 using AutoMapper;
+using Bll.Constants;
 using Bll.Dtos;
 using Bll.Exceptions;
 using Dal.DatabaseContext;
@@ -101,8 +102,29 @@ public class MatchService(
         {
             throw new MatchNotFoundException($"match with id {user.CurrentMatchId} was not found");
         }
+        
+        var dailyBonus = 1f + 0.3f * user.LoginStreakCount;
+        var timeFrameMultipliers = new Dictionary<TimeSpan, float>
+        {
+            { TimeSpan.FromSeconds(15), 2f },
+            { TimeSpan.FromMinutes(30), TimeFrameMultiplier.ThirtyMinutesMultiplier },
+            { TimeSpan.FromHours(4), TimeFrameMultiplier.FourHoursMultiplier },
+            { TimeSpan.FromHours(12), TimeFrameMultiplier.TwelveHoursMultiplier }
+        };
 
-        return mapper.Map<CurrentMatchDto>(currentMatch);
+        timeFrameMultipliers.TryGetValue(currentMatch.PredictionTimeframe, out var multiplier);
+
+        return new CurrentMatchDto
+        {
+            Id = currentMatch.Id,
+            Bet = currentMatch.PredictionAmount,
+            Coin = currentMatch.Coin,
+            EntryPrice = currentMatch.EntryPrice,
+            Prediction = currentMatch.Prediction,
+            TimeRemaining = currentMatch.EntryTime + currentMatch.PredictionTimeframe -
+                            DateTimeOffset.Now.ToUniversalTime(),
+            WinningMultiplier = dailyBonus + multiplier,
+        };
     }
 
     private void ValidateDataForMatch(MatchCreationDto matchCreationDto)

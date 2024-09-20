@@ -9,4 +9,6 @@ public class CurrentMatchModel
     public Coin Coin { get; set; }
     public Prediction Prediction { get; set; }
     public TimeSpan TimeRemaining { get; set; }
+    public float WinningMultiplier { get; set; }
+    public float EntryPrice { get; set; }
 }

@@ -50,7 +50,7 @@ public class SetMatchResultJob(
 
         var dailyBonus = 1f + 0.3f * user.LoginStreakCount;
         
-        if (match.Res != ResultStatus.Win) return 0 - match.PredictionAmount;
+        if (match.Res != ResultStatus.Win) return 0;
 
         if (match.PredictionTimeframe == TimeSpan.FromSeconds(15))
             return match.PredictionAmount * (2f + dailyBonus) - match.PredictionAmount;
