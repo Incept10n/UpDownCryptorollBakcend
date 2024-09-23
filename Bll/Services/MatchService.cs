@@ -4,7 +4,6 @@ using Bll.Dtos;
 using Bll.Exceptions;
 using Dal.DatabaseContext;
 using Dal.Entities;
-using Dal.Enums;
 
 namespace Bll.Services;
 
@@ -35,7 +34,8 @@ public class MatchService(
         {
             throw new UserAlreadyInMatchException($"user with id {user.Id} is already in match");
         }
-        
+
+        user.IsLastMatchCollected = false;
         ValidateDataForMatch(matchCreationDto);
         
         var match = new Match
@@ -44,7 +44,7 @@ public class MatchService(
             Coin = matchCreationDto.Coin,
         
             EntryTime = DateTimeOffset.Now.ToUniversalTime(),
-            EntryPrice = currentPriceService.GetCurrentPrice(Coin.Btc),
+            EntryPrice = currentPriceService.GetCurrentPrice(matchCreationDto.Coin),
         
             Prediction = matchCreationDto.PredictionValue,
             PredictionTimeframe = matchCreationDto.PredictionTimeframe,
@@ -75,7 +75,7 @@ public class MatchService(
         if (user is null) throw new UserNotFoundException($"user with wallet address: {walletAddress} was not found");
 
         return applicationDbContext.Matches
-            .OrderBy(match => match.EntryTime)
+            .OrderByDescending(match => match.EntryTime)
             .Skip(offset)
             .Take(limit)
             .Select(match => mapper.Map<MatchDto>(match))

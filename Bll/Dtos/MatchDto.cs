@@ -5,6 +5,7 @@ namespace Bll.Dtos;
 public class MatchDto
 {
     public int Id { get; set; }
+    public float Bet { get; set; }
     public Coin Coin { get; set; }
     
     public DateTimeOffset EntryDateTime { get; set; }

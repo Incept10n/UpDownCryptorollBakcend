@@ -27,4 +27,12 @@ public class UserController(
 
         return Ok();
     }
+
+    [HttpPost("collectLastMatch")]
+    public IActionResult CollectLastMatch([FromQuery] string walletAddress)
+    {
+        userService.CollectMatch(walletAddress);
+
+        return Ok();
+    }
 }

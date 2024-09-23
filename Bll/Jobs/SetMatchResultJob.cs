@@ -27,19 +27,24 @@ public class SetMatchResultJob(
         
         match.ExitTime = DateTimeOffset.Now.ToUniversalTime();
         match.ExitPrice = currentExitPrice;
-        match.Res = GetMatchResult(match, currentExitPrice);
+        match.Res = GetMatchResult(match, currentExitPrice, match.Prediction);
         match.ResultPayout = GetMatchResultPayout(match);
 
         applicationDbContext.SaveChanges();
         
-        GiveUserPayout(match);
+        FinishMatch(match);
         
         return Task.CompletedTask;
     }
 
-    private ResultStatus GetMatchResult(Match match, float currentExitPrice)
+    private ResultStatus GetMatchResult(Match match, float currentExitPrice, Prediction prediction)
     {
-        return (currentExitPrice > match.EntryPrice) ? ResultStatus.Win : ResultStatus.Loss;
+        if (prediction == Prediction.Up)
+        {
+            return (currentExitPrice > match.EntryPrice) ? ResultStatus.Win : ResultStatus.Loss;
+        }
+
+        return (currentExitPrice < match.EntryPrice) ? ResultStatus.Win : ResultStatus.Loss;
     }
 
     private float GetMatchResultPayout(Match match)
@@ -64,7 +69,7 @@ public class SetMatchResultJob(
         return match.PredictionAmount * 0f;
     }
 
-    private void GiveUserPayout(Match match)
+    private void FinishMatch(Match match)
     {
         var user = applicationDbContext.Users.FirstOrDefault(user => user.Id == match.UserId);
 
@@ -72,16 +77,6 @@ public class SetMatchResultJob(
         {
             throw new UserNotFoundException($"the user with id {match.UserId} was not found");
         }
-
-        if (user.CurrentBalance + match.ResultPayout < 0)
-        {
-            throw new InvalidBetAmountException(
-                $"the bet with amount {match.PredictionAmount} was not valid, " +
-                "match results have no effect");
-        }
-
-        user.CurrentBalance += match.ResultPayout
-                               ?? throw new InvalidBetAmountException("bet resulted in null payout");
 
         user.CurrentMatchId = null;
         

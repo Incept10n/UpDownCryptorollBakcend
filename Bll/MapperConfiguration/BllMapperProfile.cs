@@ -13,10 +13,12 @@ public class BllMapperProfile : Profile
             .ForMember(dest => dest.WalletAddress, opts => opts.MapFrom(src => src.WalletAddress))
             .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
             .ForMember(dest => dest.currentBalance, opts => opts.MapFrom(src => src.CurrentBalance))
-            .ForMember(dest => dest.LoginStreakCount, opts => opts.MapFrom(src => src.LoginStreakCount));
+            .ForMember(dest => dest.LoginStreakCount, opts => opts.MapFrom(src => src.LoginStreakCount))
+            .ForMember(dest => dest.IsLastMatchCollected, opts => opts.MapFrom(src => src.IsLastMatchCollected));
 
         CreateMap<Match, MatchDto>()
             .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Bet, opts => opts.MapFrom(src => src.PredictionAmount))
             .ForMember(dest => dest.Coin, opts => opts.MapFrom(src => src.Coin))
             .ForMember(dest => dest.EntryDateTime, opts => opts.MapFrom(src => src.EntryTime))
             .ForMember(dest => dest.EntryPrice, opts => opts.MapFrom(src => src.EntryPrice))

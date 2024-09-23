@@ -6,4 +6,6 @@ public class UserDto
     public string Name { get; set; }
     public int currentBalance { get; set; }
     public int LoginStreakCount { get; set; }
+    
+    public bool IsLastMatchCollected { get; set; }
 }

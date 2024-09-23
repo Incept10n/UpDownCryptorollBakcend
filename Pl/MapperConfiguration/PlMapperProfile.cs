@@ -10,7 +10,9 @@ public class PlMapperProfile : Profile
     {
         CreateMap<UserDto, UserModel>()
             .ForMember(dest => dest.Username, opts => opts.MapFrom(src => src.Name))
-            .ForMember(dest => dest.CurrentBalance, opts => opts.MapFrom(src => src.currentBalance));
+            .ForMember(dest => dest.CurrentBalance, opts => opts.MapFrom(src => src.currentBalance))
+            .ForMember(dest => dest.LoginStreakCount, opts => opts.MapFrom(src => src.LoginStreakCount))
+            .ForMember(dest => dest.IsLastMatchCollected, opts => opts.MapFrom(src => src.IsLastMatchCollected));
 
         CreateMap<UserChangeNameModel, UserChangeNameDto>()
             .ForMember(dest => dest.newName, opts => opts.MapFrom(src => src.newName));
@@ -32,10 +34,11 @@ public class PlMapperProfile : Profile
         
         CreateMap<MatchDto, MatchModel>()
             .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Bet, opts => opts.MapFrom(src => src.Bet))
             .ForMember(dest => dest.Coin, opts => opts.MapFrom(src => src.Coin))
             .ForMember(dest => dest.EntryDateTime, opts => opts.MapFrom(src => src.EntryDateTime))
             .ForMember(dest => dest.EntryPrice, opts => opts.MapFrom(src => src.EntryPrice))
-            .ForMember(dest => dest.ExitDateTIme, opts => opts.MapFrom(src => src.ExitDateTIme))
+            .ForMember(dest => dest.ExitDateTime, opts => opts.MapFrom(src => src.ExitDateTIme))
             .ForMember(dest => dest.ExitPrice, opts => opts.MapFrom(src => src.ExitPrice))
             .ForMember(dest => dest.PredictionValue, opts => opts.MapFrom(src => src.PredictionValue))
             .ForMember(dest => dest.PredictionTimeframe, opts => opts.MapFrom(src => src.PredictionTimeframe))
