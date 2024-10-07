@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices.ComTypes;
 using AutoMapper;
 using Bll.Dtos;
+using Bll.Dtos.Tasks;
 using Dal.Entities;
 
 namespace Bll.MapperConfiguration;
@@ -38,5 +39,10 @@ public class BllMapperProfile : Profile
             .ForMember(dest => dest.TimeRemaining, opts => opts.MapFrom(src =>
                 src.EntryTime + src.PredictionTimeframe - DateTimeOffset.Now.ToUniversalTime()
             ));
+
+        CreateMap<RewardTask, RewardTaskDto>()
+            .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Reward, opts => opts.MapFrom(src => src.Reward));
     }
 }

@@ -1,6 +1,8 @@
 using AutoMapper;
 using Bll.Dtos;
+using Bll.Dtos.Tasks;
 using UpDownCryptorollBackend.Models;
+using UpDownCryptorollBackend.Models.Tasks;
 
 namespace UpDownCryptorollBackend.MapperConfiguration;
 
@@ -53,5 +55,15 @@ public class PlMapperProfile : Profile
             .ForMember(dest => dest.TimeRemaining, opts => opts.MapFrom(src => src.TimeRemaining))
             .ForMember(dest => dest.WinningMultiplier, opts => opts.MapFrom(src => src.WinningMultiplier))
             .ForMember(dest => dest.EntryPrice, opts => opts.MapFrom(src => src.EntryPrice));
+
+        CreateMap<RewardTaskDto, RewardTaskModel>()
+            .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Reward, opts => opts.MapFrom(src => src.Reward))
+            .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.Status));
+
+        CreateMap<TaskTypeChangeModel, RewardTaskChangeDto>()
+            .ForMember(dest => dest.TaskId, opts => opts.MapFrom(src => src.TaskId))
+            .ForMember(dest => dest.ChangedStatus, opts => opts.MapFrom(src => src.ChangedStatus));
     }
 }

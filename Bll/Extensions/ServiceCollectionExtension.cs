@@ -14,6 +14,6 @@ public static class ServiceCollectionExtension
         serviceCollection.AddScoped<RegexManager>();
         serviceCollection.AddScoped<JobScheduleService>();
         serviceCollection.AddScoped<RewardsService>();
+        serviceCollection.AddScoped<RewardTaskService>();
     }
-
 }
