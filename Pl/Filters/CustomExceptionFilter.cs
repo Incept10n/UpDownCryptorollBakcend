@@ -13,6 +13,7 @@ public class CustomExceptionFilter : IExceptionFilter
             UserNotFoundException => StatusCodes.Status404NotFound,
             UnknownCoinTypeException => StatusCodes.Status400BadRequest,
             MatchNotFoundException => StatusCodes.Status404NotFound,
+            TaskCanceledException => StatusCodes.Status400BadRequest,
             _ => StatusCodes.Status500InternalServerError
         };
 

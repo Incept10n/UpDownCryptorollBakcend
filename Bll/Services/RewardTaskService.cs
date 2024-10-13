@@ -59,8 +59,13 @@ public class RewardTaskService(ApplicationDbContext applicationDbContext)
             
             userTasks = newUserTask;
         }
+
+        if (userTasks.Completed.Length + userTasks.Uncompleted.Length + userTasks.Uncollected.Length < rewardTaskChangeDto.TaskId)
+        {
+            throw new TaskOutOfRangeException($"task with id {rewardTaskChangeDto.TaskId} doesn't exist");
+        }
         
-        ChangeTaskStatus(userTasks, rewardTaskChangeDto);
+        ChangeTaskStatus(user, userTasks, rewardTaskChangeDto);
         
         applicationDbContext.SaveChanges();
     }
@@ -75,7 +80,7 @@ public class RewardTaskService(ApplicationDbContext applicationDbContext)
             var taskName = tasks.First(t => t.Id == taskId).Name;
             var taskReward = tasks.First(t => t.Id == taskId).Reward;
             var taskStatus = RewardTaskStatus.Uncompleted;
-            
+
             taskDtos.Add(new RewardTaskDto {Id = taskId, Name = taskName, Reward = taskReward, Status = taskStatus});
         }
         
@@ -102,7 +107,7 @@ public class RewardTaskService(ApplicationDbContext applicationDbContext)
         return taskDtos;
     }
 
-    private void ChangeTaskStatus(UserTask userTasks, RewardTaskChangeDto rewardTaskChangeDto)
+    private void ChangeTaskStatus(User user, UserTask userTasks, RewardTaskChangeDto rewardTaskChangeDto)
     {
         var taskIdChar = char.Parse(rewardTaskChangeDto.TaskId.ToString());
         
@@ -114,6 +119,8 @@ public class RewardTaskService(ApplicationDbContext applicationDbContext)
         {
             case RewardTaskStatus.Completed:
                 userTasks.Completed += taskIdChar.ToString();
+                var task = applicationDbContext.RewardTasks.FirstOrDefault(task => task.Id == rewardTaskChangeDto.TaskId);
+                user.CurrentBalance += task!.Reward;
                 break;
             case RewardTaskStatus.Uncollected:
                 userTasks.Uncollected += taskIdChar.ToString();
