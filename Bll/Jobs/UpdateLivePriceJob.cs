@@ -2,6 +2,7 @@ using Bll.Managers;
 using Dal.DatabaseContext;
 using Dal.Entities;
 using Dal.Enums;
+using Polly;
 using Quartz;
 
 namespace Bll.Jobs;
@@ -23,25 +24,32 @@ public class UpdateLivePriceJob(
         try
         {
             var url = GetUrlForCoin(coin);
-
-            var response = await httpClient.GetAsync(url);
-            response.EnsureSuccessStatusCode(); 
             
-            var htmlString = await response.Content.ReadAsStringAsync();
+            var retryPolicy = Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(10, attempt => TimeSpan.FromSeconds(10 * Math.Pow(attempt, 2)));
 
-            var priceRegex = regexManager.GetRegexBasedOnCoinType(coin);
-            var priceMatch = priceRegex.Match(htmlString);
-
-            if (!priceMatch.Success) return -1;
-            
-            var priceString = priceMatch.Groups["price"].Value;
-            
-            if (float.TryParse(priceString.Replace(",", ""), out var bitcoinPrice))
+            return await retryPolicy.ExecuteAsync(async () =>
             {
-                return bitcoinPrice;
-            }
+                var response = await httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
 
-            return -1;
+                var htmlString = await response.Content.ReadAsStringAsync();
+
+                var priceRegex = regexManager.GetRegexBasedOnCoinType(coin);
+                var priceMatch = priceRegex.Match(htmlString);
+
+                if (!priceMatch.Success) return -1;
+
+                var priceString = priceMatch.Groups["price"].Value;
+
+                if (float.TryParse(priceString.Replace(",", ""), out var parsedPrice))
+                {
+                    return parsedPrice;
+                }
+
+                return -1;
+            });
         }
         catch (HttpRequestException e)
         {

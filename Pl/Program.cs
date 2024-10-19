@@ -30,14 +30,6 @@ builder.Services.AddAutoMapper(typeof(BllMapperProfile), typeof(PlMapperProfile)
 
 builder.Services.AddCors(options =>
     {
-        // options.AddPolicy("AllowSpecificOrigins",
-        //     builder =>
-        //     {
-        //         builder.WithOrigins("http://172.27.33.20:5173") // Add your React frontend URL
-        //                .AllowAnyHeader()
-        //                .AllowAnyMethod()
-        //                .AllowCredentials(); // Allow cookies or authentication tokens if needed
-        //     });
         options.AddPolicy("AllowAll",
                     builder =>
                     {
