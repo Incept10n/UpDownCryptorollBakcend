@@ -75,6 +75,7 @@ public class MatchService(
         if (user is null) throw new UserNotFoundException($"user with wallet address: {walletAddress} was not found");
 
         return applicationDbContext.Matches
+            .Where(match => match.User == user)
             .OrderByDescending(match => match.EntryTime)
             .Skip(offset)
             .Take(limit)
