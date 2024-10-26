@@ -2,18 +2,19 @@ using Bll.Dtos.Tasks;
 using Bll.Exceptions;
 using Dal.DatabaseContext;
 using Dal.Entities;
+using Dal.Entities.User;
 using Dal.Enums;
 
 namespace Bll.Services;
 
 public class RewardTaskService(ApplicationDbContext applicationDbContext)
 {
-    public List<RewardTaskDto> GetAllTasks(string walletAddress)
+    public List<RewardTaskDto> GetAllTasks(string username)
     {
         var tasks = applicationDbContext.RewardTasks.ToList();
-        var user = applicationDbContext.Users.FirstOrDefault(user => user.WalletAddress == walletAddress);
+        var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == username);
         
-        if (user is null) throw new UserNotFoundException($"user with {walletAddress} not found");
+        if (user is null) throw new UserNotFoundException($"user with name {username} not found");
         
         var userTasks = applicationDbContext.UserTasks.FirstOrDefault(u => u.UserId == user.Id);
 
@@ -37,11 +38,11 @@ public class RewardTaskService(ApplicationDbContext applicationDbContext)
         return GetTasksWithStatuses(tasks, userTasks).OrderBy(task => task.Id).ToList();
     }
 
-    public void ChangeTaskStatus(string walletAddress, RewardTaskChangeDto rewardTaskChangeDto)
+    public void ChangeTaskStatus(string username, RewardTaskChangeDto rewardTaskChangeDto)
     {
-        var user = applicationDbContext.Users.FirstOrDefault(user => user.WalletAddress == walletAddress);
+        var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == username);
         
-        if (user is null) throw new UserNotFoundException($"user with {walletAddress} not found");
+        if (user is null) throw new UserNotFoundException($"user with name {username} not found");
         
         var userTasks = applicationDbContext.UserTasks.FirstOrDefault(u => u.UserId == user.Id);
         

@@ -1,8 +1,10 @@
 using AutoMapper;
 using Bll.Dtos;
 using Bll.Dtos.Tasks;
+using Dal.Entities.User;
 using UpDownCryptorollBackend.Models;
 using UpDownCryptorollBackend.Models.Tasks;
+using UpDownCryptorollBackend.Models.Users;
 
 namespace UpDownCryptorollBackend.MapperConfiguration;
 
@@ -12,12 +14,19 @@ public class PlMapperProfile : Profile
     {
         CreateMap<UserDto, UserModel>()
             .ForMember(dest => dest.Username, opts => opts.MapFrom(src => src.Name))
-            .ForMember(dest => dest.CurrentBalance, opts => opts.MapFrom(src => src.currentBalance))
+            .ForMember(dest => dest.WalletAddress, opts => opts.MapFrom(src => src.WalletAddress))
+            .ForMember(dest => dest.CurrentBalance, opts => opts.MapFrom(src => src.CurrentBalance))
             .ForMember(dest => dest.LoginStreakCount, opts => opts.MapFrom(src => src.LoginStreakCount))
             .ForMember(dest => dest.IsLastMatchCollected, opts => opts.MapFrom(src => src.IsLastMatchCollected));
 
-        CreateMap<UserChangeNameModel, UserChangeNameDto>()
-            .ForMember(dest => dest.newName, opts => opts.MapFrom(src => src.newName));
+        CreateMap<UserChangeInfoModel, UserChangeInfoDto>()
+            .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Password, opts => opts.MapFrom(src => src.Password))
+            .ForMember(dest => dest.WalletAddress, opts => opts.MapFrom(src => src.WalletAddress));
+        
+        CreateMap<UserCreationModel, UserCreationDto>()
+            .ForMember(dest => dest.Username, opts => opts.MapFrom(src => src.Username))
+            .ForMember(dest => dest.Password, opts => opts.MapFrom(src => src.Password));
 
         CreateMap<MatchCreationModel, MatchCreationDto>()
             .ForMember(dest => dest.WalletAddress, opts => opts.MapFrom(src => src.WalletAddress))

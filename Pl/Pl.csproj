@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <PackageReference Include="DotNetEnv" Version="3.1.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0-preview.7.24405.3">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,6 +23,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Quartz.AspNetCore" Version="3.13.0" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
     </ItemGroup>
 
 </Project>

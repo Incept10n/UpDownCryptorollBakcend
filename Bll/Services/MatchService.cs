@@ -68,11 +68,11 @@ public class MatchService(
         await jobScheduleService.CompleteMatchResult(match.Id, match.PredictionTimeframe);
     }
 
-    public List<MatchDto> GetMatchHistory(string walletAddress, int offset, int limit)
+    public List<MatchDto> GetMatchHistory(string username, int offset, int limit)
     {
-        var user = applicationDbContext.Users.FirstOrDefault(user => user.WalletAddress == walletAddress);
+        var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == username);
 
-        if (user is null) throw new UserNotFoundException($"user with wallet address: {walletAddress} was not found");
+        if (user is null) throw new UserNotFoundException($"user with name {username} was not found");
 
         return applicationDbContext.Matches
             .Where(match => match.User == user)

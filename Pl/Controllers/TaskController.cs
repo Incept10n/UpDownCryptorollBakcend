@@ -13,15 +13,15 @@ public class TaskController(
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetAllTasks(string walletAddress)
+    public IActionResult GetAllTasks(string username)
     {
-        return Ok(rewardTaskService.GetAllTasks(walletAddress).Select(mapper.Map<RewardTaskDto>));
+        return Ok(rewardTaskService.GetAllTasks(username).Select(mapper.Map<RewardTaskDto>));
     }
 
     [HttpPost]
-    public IActionResult ChangeTaskType(string walletAddress, TaskTypeChangeModel taskModel)
+    public IActionResult ChangeTaskType(string username, TaskTypeChangeModel taskModel)
     {
-        rewardTaskService.ChangeTaskStatus(walletAddress, mapper.Map<RewardTaskChangeDto>(taskModel));
+        rewardTaskService.ChangeTaskStatus(username, mapper.Map<RewardTaskChangeDto>(taskModel));
 
         return Ok();
     }

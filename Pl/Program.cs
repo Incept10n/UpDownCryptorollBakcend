@@ -1,9 +1,12 @@
+using System.Text;
 using System.Text.Json.Serialization;
 using Bll.Extensions;
 using Bll.MapperConfiguration;
 using Bll.Services;
 using Dal.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Quartz;
 using UpDownCryptorollBackend.Filters;
 using UpDownCryptorollBackend.MapperConfiguration;
@@ -43,6 +46,23 @@ builder.Services.AddQuartz();
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = false);
 
 builder.Services.AddBll();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET")))
+        };
+    });
 
 var app = builder.Build();
 

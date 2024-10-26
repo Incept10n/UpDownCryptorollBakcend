@@ -10,10 +10,14 @@ public class CustomExceptionFilter : IExceptionFilter
     {
         var statusCode = context.Exception switch
         {
-            UserNotFoundException => StatusCodes.Status404NotFound,
-            UnknownCoinTypeException => StatusCodes.Status400BadRequest,
+            InvalidBetAmountException => StatusCodes.Status400BadRequest,
             MatchNotFoundException => StatusCodes.Status404NotFound,
-            TaskCanceledException => StatusCodes.Status400BadRequest,
+            TaskOutOfRangeException => StatusCodes.Status400BadRequest,
+            UnknownCoinTypeException => StatusCodes.Status400BadRequest,
+            UserAlreadyExistsException => StatusCodes.Status409Conflict,
+            UserAlreadyInMatchException => StatusCodes.Status400BadRequest,
+            UserNotFoundException => StatusCodes.Status404NotFound,
+            WrongPredictionTimeframeException => StatusCodes.Status400BadRequest,
             _ => StatusCodes.Status500InternalServerError
         };
 

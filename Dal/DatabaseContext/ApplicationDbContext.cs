@@ -1,4 +1,5 @@
 using Dal.Entities;
+using Dal.Entities.User;
 using Dal.Enums;
 using Microsoft.EntityFrameworkCore;
 

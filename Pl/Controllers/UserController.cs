@@ -1,8 +1,10 @@
 using AutoMapper;
 using Bll.Dtos;
 using Bll.Services;
+using Dal.Entities.User;
 using Microsoft.AspNetCore.Mvc;
 using UpDownCryptorollBackend.Models;
+using UpDownCryptorollBackend.Models.Users;
 
 namespace UpDownCryptorollBackend.Controllers;
 
@@ -13,19 +15,27 @@ public class UserController(
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetUserInfo(string walletAddress)
+    public IActionResult GetUserInfo(string username)
     {
-        var user = userService.GetUserInfo(walletAddress);
+        var user = userService.GetUserInfo(username);
 
         return Ok(mapper.Map<UserModel>(user));
     }
 
     [HttpPut]
-    public IActionResult ChangeUserName(string walletAddress, UserChangeNameModel userChangeNameModel)
+    public IActionResult ChangeUserInfo(string username, UserChangeInfoModel userChangeInfoModel)
     {
-        userService.ChangeUserName(walletAddress, mapper.Map<UserChangeNameDto>(userChangeNameModel));
+        userService.ChangeUserInfo(username, mapper.Map<UserChangeInfoDto>(userChangeInfoModel));
 
         return Ok();
+    }
+
+    [HttpPost]
+    public IActionResult CreateUser([FromBody] UserCreationModel userCreationModel)
+    {
+        userService.CreateUser(mapper.Map<UserCreationDto>(userCreationModel));
+
+        return Created();
     }
 
     [HttpPost("collectLastMatch")]

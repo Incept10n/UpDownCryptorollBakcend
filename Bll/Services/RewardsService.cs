@@ -2,6 +2,7 @@ using Bll.Dtos;
 using Bll.Exceptions;
 using Dal.DatabaseContext;
 using Dal.Entities;
+using Dal.Entities.User;
 
 namespace Bll.Services;
 

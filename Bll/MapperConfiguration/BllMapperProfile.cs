@@ -3,6 +3,7 @@ using AutoMapper;
 using Bll.Dtos;
 using Bll.Dtos.Tasks;
 using Dal.Entities;
+using Dal.Entities.User;
 
 namespace Bll.MapperConfiguration;
 
@@ -13,7 +14,7 @@ public class BllMapperProfile : Profile
         CreateMap<User, UserDto>()
             .ForMember(dest => dest.WalletAddress, opts => opts.MapFrom(src => src.WalletAddress))
             .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
-            .ForMember(dest => dest.currentBalance, opts => opts.MapFrom(src => src.CurrentBalance))
+            .ForMember(dest => dest.CurrentBalance, opts => opts.MapFrom(src => src.CurrentBalance))
             .ForMember(dest => dest.LoginStreakCount, opts => opts.MapFrom(src => src.LoginStreakCount))
             .ForMember(dest => dest.IsLastMatchCollected, opts => opts.MapFrom(src => src.IsLastMatchCollected));
 

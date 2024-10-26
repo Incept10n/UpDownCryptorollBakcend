@@ -23,6 +23,7 @@
       <PackageReference Include="Polly" Version="8.4.2" />
       <PackageReference Include="Quartz" Version="3.13.0" />
       <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.0" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
     </ItemGroup>
 
 </Project>

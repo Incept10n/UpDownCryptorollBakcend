@@ -6,7 +6,7 @@ public class Match
 {
     public int Id { get; set; }
     public int UserId { get; set; }
-    public User User { get; set; }
+    public User.User User { get; set; }
     public Coin Coin { get; set; }
     
     public DateTimeOffset EntryTime { get; set; }
