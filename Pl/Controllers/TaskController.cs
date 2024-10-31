@@ -1,6 +1,7 @@
 using AutoMapper;
 using Bll.Dtos.Tasks;
 using Bll.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UpDownCryptorollBackend.Models.Tasks;
 
@@ -8,6 +9,7 @@ namespace UpDownCryptorollBackend.Controllers;
 
 [ApiController]
 [Route("/tasks")]
+[Authorize]
 public class TaskController(
     RewardTaskService rewardTaskService,
     IMapper mapper) : ControllerBase

@@ -1,5 +1,6 @@
 using AutoMapper;
 using Bll.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UpDownCryptorollBackend.Models;
 
@@ -7,6 +8,7 @@ namespace UpDownCryptorollBackend.Controllers;
 
 [ApiController]
 [Route("/rewards")]
+[Authorize]
 public class RewardsController(
     RewardsService rewardsService,
     IMapper mapper) : ControllerBase

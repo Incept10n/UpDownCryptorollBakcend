@@ -18,6 +18,7 @@ public class CustomExceptionFilter : IExceptionFilter
             UserAlreadyInMatchException => StatusCodes.Status400BadRequest,
             UserNotFoundException => StatusCodes.Status404NotFound,
             WrongPredictionTimeframeException => StatusCodes.Status400BadRequest,
+            IncorrectUsernameOrPassword => StatusCodes.Status401Unauthorized,
             _ => StatusCodes.Status500InternalServerError
         };
 

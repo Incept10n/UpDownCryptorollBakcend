@@ -2,6 +2,7 @@ using AutoMapper;
 using Bll.Dtos;
 using Bll.Services;
 using Dal.Entities.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UpDownCryptorollBackend.Models;
 using UpDownCryptorollBackend.Models.Users;
@@ -10,6 +11,7 @@ namespace UpDownCryptorollBackend.Controllers;
 
 [ApiController]
 [Route("/user")]
+[Authorize]
 public class UserController(
     UserService userService,
     IMapper mapper) : ControllerBase

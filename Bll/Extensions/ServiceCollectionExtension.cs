@@ -15,5 +15,6 @@ public static class ServiceCollectionExtension
         serviceCollection.AddScoped<JobScheduleService>();
         serviceCollection.AddScoped<RewardsService>();
         serviceCollection.AddScoped<RewardTaskService>();
+        serviceCollection.AddScoped<JwtTokenManager>();
     }
 }

@@ -1,6 +1,7 @@
 using AutoMapper;
 using Bll.Dtos;
 using Bll.Dtos.Tasks;
+using Bll.Dtos.Users;
 using Dal.Entities.User;
 using UpDownCryptorollBackend.Models;
 using UpDownCryptorollBackend.Models.Tasks;

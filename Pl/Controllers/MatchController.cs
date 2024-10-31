@@ -1,6 +1,7 @@
 using AutoMapper;
 using Bll.Dtos;
 using Bll.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UpDownCryptorollBackend.Models;
 
@@ -8,6 +9,7 @@ namespace UpDownCryptorollBackend.Controllers;
 
 [ApiController]
 [Route("/match")]
+[Authorize]
 public class MatchController(
     MatchService matchService, 
     IMapper mapper) : ControllerBase

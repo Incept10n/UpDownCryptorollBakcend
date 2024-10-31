@@ -2,6 +2,7 @@ using System.Runtime.InteropServices.ComTypes;
 using AutoMapper;
 using Bll.Dtos;
 using Bll.Dtos.Tasks;
+using Bll.Dtos.Users;
 using Dal.Entities;
 using Dal.Entities.User;
 

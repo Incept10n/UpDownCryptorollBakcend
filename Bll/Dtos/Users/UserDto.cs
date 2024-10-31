@@ -1,4 +1,4 @@
-namespace Bll.Dtos;
+namespace Bll.Dtos.Users;
 
 public class UserDto
 {

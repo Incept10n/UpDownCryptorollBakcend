@@ -1,6 +1,8 @@
 using AutoMapper;
 using Bll.Dtos;
+using Bll.Dtos.Users;
 using Bll.Exceptions;
+using Bll.Managers;
 using Dal.DatabaseContext;
 using Dal.Entities.User;
 
@@ -10,6 +12,7 @@ public class UserService(
     ApplicationDbContext applicationDbContext,
     RewardsService rewardsService,
     MatchService matchService,
+    JwtTokenManager jwtTokenManager,
     IMapper mapper)
 {
     public UserDto GetUserInfo(string username)
@@ -25,7 +28,7 @@ public class UserService(
         return mapper.Map<UserDto>(user);
     }
 
-    public void CreateUser(UserCreationDto userCreationDto)
+    public UserWithJwtTokenDto CreateUser(UserCreationDto userCreationDto)
     {
         var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == userCreationDto.Username);
 
@@ -38,6 +41,13 @@ public class UserService(
         
         applicationDbContext.Users.Add(newUser);
         applicationDbContext.SaveChanges();
+        
+        string token = jwtTokenManager.GenerateJwtToken(newUser);
+        return new UserWithJwtTokenDto
+        {
+            UserDto = mapper.Map<UserDto>(newUser),
+            JwtToken = token,
+        };
     }
 
     public void ChangeUserInfo(string currentUsername, UserChangeInfoDto userChangeInfoDto)
@@ -87,12 +97,30 @@ public class UserService(
         applicationDbContext.SaveChanges();
     }
 
+    public UserWithJwtTokenDto Login(UserCreationDto userCreationDto)
+    {
+        var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == userCreationDto.Username);
+
+        if (user is null || !BCrypt.Net.BCrypt.Verify(userCreationDto.Password, user.Password))
+        {
+            throw new IncorrectUsernameOrPassword($"incorrect username or password");
+        }
+        
+        string token = jwtTokenManager.GenerateJwtToken(user);
+        
+        return new UserWithJwtTokenDto
+        {
+            UserDto = mapper.Map<UserDto>(user),
+            JwtToken = token,
+        };
+    }
+
     private User CreateNewDefaultUser(UserCreationDto userCreationDto)
     {
         return new User
         {
             Name = userCreationDto.Username,
-            Password = userCreationDto.Password,
+            Password = BCrypt.Net.BCrypt.HashPassword(userCreationDto.Password),
             WalletAddress = string.Empty,
                            
             CurrentBalance = 10000,

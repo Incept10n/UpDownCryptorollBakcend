@@ -14,14 +14,12 @@ public class AuthController(
     [HttpPost("signup")]
     public IActionResult Signup([FromBody] UserCreationModel userCreationModel)
     {
-        userService.CreateUser(mapper.Map<UserCreationDto>(userCreationModel));
-
-        return Created();
+        return Created("/signup", userService.CreateUser(mapper.Map<UserCreationDto>(userCreationModel)));
     }
 
     [HttpPost("login")]
-    public Task<IActionResult> Login([FromBody] UserCreationModel userCreationModel)
+    public IActionResult Login([FromBody] UserCreationModel userCreationModel)
     {
-        
+        return Created("/login", userService.Login(mapper.Map<UserCreationDto>(userCreationModel)));
     }
 }
