@@ -3,6 +3,7 @@ using Bll.Dtos;
 using Bll.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UpDownCryptorollBackend.Filters.FilterAttributes;
 using UpDownCryptorollBackend.Models;
 
 namespace UpDownCryptorollBackend.Controllers;
@@ -10,12 +11,15 @@ namespace UpDownCryptorollBackend.Controllers;
 [ApiController]
 [Route("/match")]
 [Authorize]
+[UsernameAuthorization]
 public class MatchController(
     MatchService matchService, 
     IMapper mapper) : ControllerBase
 {
     [HttpPost("createMatch")]
-    public async Task<IActionResult> MakePrediction(MatchCreationModel matchCreationModel)
+    public async Task<IActionResult> MakePrediction(
+        string username,
+        [FromBody] MatchCreationModel matchCreationModel)
     {
         await matchService.CreateMatch(mapper.Map<MatchCreationDto>(matchCreationModel));
         

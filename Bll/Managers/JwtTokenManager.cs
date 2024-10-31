@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Bll.Managers;
 
-public class JwtTokenManager(IConfiguration configuration)
+public class JwtTokenManager
 {
     public string GenerateJwtToken(User user)
     {
