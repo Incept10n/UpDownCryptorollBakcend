@@ -30,7 +30,7 @@ public class PlMapperProfile : Profile
             .ForMember(dest => dest.Password, opts => opts.MapFrom(src => src.Password));
 
         CreateMap<MatchCreationModel, MatchCreationDto>()
-            .ForMember(dest => dest.WalletAddress, opts => opts.MapFrom(src => src.WalletAddress))
+            .ForMember(dest => dest.Username, opts => opts.MapFrom(src => src.Username))
             .ForMember(dest => dest.Coin, opts => opts.MapFrom(src => src.Coin))
             .ForMember(dest => dest.PredictionAmount, opts => opts.MapFrom(src => src.PredictionAmount))
             .ForMember(dest => dest.PredictionTimeframe, opts => opts.MapFrom(src => src.PredictionTimeframe))

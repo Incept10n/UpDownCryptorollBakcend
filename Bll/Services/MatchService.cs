@@ -16,12 +16,10 @@ public class MatchService(
     public async Task CreateMatch(MatchCreationDto matchCreationDto)
     {
         var user = applicationDbContext.Users.FirstOrDefault(user =>
-            user.WalletAddress == matchCreationDto.WalletAddress);
+            user.Name == matchCreationDto.Username);
 
         if (user is null)
-        {
-            throw new UserNotFoundException($"user with wallet address {matchCreationDto.WalletAddress} was not found");
-        }
+            throw new UserNotFoundException($"user with username {matchCreationDto.Username} was not found");
 
         if (matchCreationDto.PredictionAmount <= 0
             || user.CurrentBalance - matchCreationDto.PredictionAmount < 0)
@@ -83,26 +81,20 @@ public class MatchService(
             .ToList();
     }
 
-    public CurrentMatchDto GetCurrentMatch(string walletAddress)
+    public CurrentMatchDto GetCurrentMatch(string username)
     {
-        var user = applicationDbContext.Users.FirstOrDefault(user => user.WalletAddress == walletAddress);
+        var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == username);
 
         if (user is null)
-        {
-            throw new UserNotFoundException($"user with wallet address {walletAddress} was not found");
-        }
+            throw new UserNotFoundException($"user with username {username} was not found");
 
         if (user.CurrentMatchId is null)
-        {
-            throw new MatchNotFoundException($"user with wallet address {walletAddress} is not currently in a match");
-        }
+            throw new MatchNotFoundException($"user with username {username} is not currently in a match");
 
         var currentMatch = applicationDbContext.Matches.FirstOrDefault(match => match.Id == user.CurrentMatchId);
 
         if (currentMatch is null)
-        {
             throw new MatchNotFoundException($"match with id {user.CurrentMatchId} was not found");
-        }
         
         var dailyBonus = 1f + 0.3f * user.LoginStreakCount;
         var timeFrameMultipliers = new Dictionary<TimeSpan, float>

@@ -7,14 +7,14 @@ using Dal.Enums;
 
 namespace Bll.Services;
 
-public class RewardTaskService(ApplicationDbContext applicationDbContext)
+public class RewardTaskService(
+    ApplicationDbContext applicationDbContext,
+    UserService userService)
 {
     public List<RewardTaskDto> GetAllTasks(string username)
     {
         var tasks = applicationDbContext.RewardTasks.ToList();
-        var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == username);
-        
-        if (user is null) throw new UserNotFoundException($"user with name {username} not found");
+        var user = userService.GetUserByName(username);
         
         var userTasks = applicationDbContext.UserTasks.FirstOrDefault(u => u.UserId == user.Id);
 
@@ -40,9 +40,7 @@ public class RewardTaskService(ApplicationDbContext applicationDbContext)
 
     public void ChangeTaskStatus(string username, RewardTaskChangeDto rewardTaskChangeDto)
     {
-        var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == username);
-        
-        if (user is null) throw new UserNotFoundException($"user with name {username} not found");
+        var user = userService.GetUserByName(username);
         
         var userTasks = applicationDbContext.UserTasks.FirstOrDefault(u => u.UserId == user.Id);
         

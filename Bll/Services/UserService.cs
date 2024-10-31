@@ -17,14 +17,10 @@ public class UserService(
 {
     public UserDto GetUserInfo(string username)
     {
-        var user =  applicationDbContext.Users.FirstOrDefault(user => user.Name == username);
-
-        if (user is null)
-        {
-            throw new UserNotFoundException($"user with username {username} not found");
-        }
+        var user = GetUserByName(username);
         
         rewardsService.CalculateUserLoggedInReward(user);
+        
         return mapper.Map<UserDto>(user);
     }
 
@@ -33,9 +29,7 @@ public class UserService(
         var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == userCreationDto.Username);
 
         if (user is not null)
-        {
             throw new UserAlreadyExistsException($"user with name {userCreationDto.Username} already exists");
-        }
         
         var newUser = CreateNewDefaultUser(userCreationDto);
         
@@ -52,41 +46,20 @@ public class UserService(
 
     public void ChangeUserInfo(string currentUsername, UserChangeInfoDto userChangeInfoDto)
     {
-        var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == currentUsername);
-
-        if (user is null)
-        {
-            throw new UserNotFoundException($"user with name {currentUsername} not found");
-        }
+        var user = GetUserByName(currentUsername);
         
         rewardsService.CalculateUserLoggedInReward(user);
 
-        if (userChangeInfoDto.Name is not null)
-        {
-            var searchUser = applicationDbContext.Users.FirstOrDefault(u => u.Name == userChangeInfoDto.Name);
-            
-            if (searchUser is not null) throw new UserAlreadyExistsException($"user with name {userChangeInfoDto.Name} already exists");
-            
-            user.Name = userChangeInfoDto.Name ?? user.Name;
-        }
-
-        if (userChangeInfoDto.WalletAddress is not null)
-        {
-            var searchUser = applicationDbContext.Users.FirstOrDefault(u => u.WalletAddress == userChangeInfoDto.WalletAddress);
-            
-            if (searchUser is not null) throw new UserAlreadyExistsException($"user with name {userChangeInfoDto.Name} already exists");
-            
-            user.WalletAddress = userChangeInfoDto.WalletAddress ?? user.WalletAddress;
-        }
+        user.Name = userChangeInfoDto.Name ?? user.Name;
+        user.Password = BCrypt.Net.BCrypt.HashPassword(userChangeInfoDto.Password) ?? user.Password;
+        user.WalletAddress = userChangeInfoDto.WalletAddress ?? user.WalletAddress;
 
         applicationDbContext.SaveChanges();
     }
     
     public void CollectMatch(string username)
     {
-        var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == username);
-
-        if (user is null) throw new UserNotFoundException($"user with username {username} not found");
+        var user = GetUserByName(username);
 
         // get the latest match
         var match = matchService.GetMatchHistory(username, 0, 1).First();
@@ -132,5 +105,21 @@ public class UserService(
             IsDailyRewardCollected = false,
             IsLastMatchCollected = true,
         };
+    }
+
+    /// <summary>
+    /// Returns user by name
+    /// </summary>
+    /// <param name="name">User name</param>
+    /// <returns>User entity</returns>
+    /// <exception cref="UserNotFoundException">Throws if user with an entered name doesn't exist</exception>
+    public User GetUserByName(string name)
+    {
+        var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == name);
+
+        if (user is null) 
+            throw new UserNotFoundException($"user with name {name} not found");
+
+        return user;
     }
 }

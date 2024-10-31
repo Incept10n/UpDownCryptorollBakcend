@@ -23,11 +23,11 @@ public class MatchController(
     }
 
     [HttpGet("current")]
-    public IActionResult GetWhetherUserHasCurrentMatch(string walletAddress)
+    public IActionResult GetWhetherUserHasCurrentMatch(string username)
     {
         try
         {
-            var matchDto = matchService.GetCurrentMatch(walletAddress);
+            var matchDto = matchService.GetCurrentMatch(username);
             return Ok(mapper.Map<CurrentMatchModel>(matchDto));
         }
         catch (Exception e)
@@ -38,9 +38,9 @@ public class MatchController(
     }
 
     [HttpGet("history")]
-    public IActionResult GetMatchHistory(string walletAddress, int offset, int limit)
+    public IActionResult GetMatchHistory(string username, int offset, int limit)
     {
-        return Ok(matchService.GetMatchHistory(walletAddress, offset, limit)
+        return Ok(matchService.GetMatchHistory(username, offset, limit)
             .Select(match => mapper.Map<MatchModel>(match)));
     }
 }
