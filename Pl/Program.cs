@@ -5,7 +5,6 @@ using Bll.MapperConfiguration;
 using Bll.Services;
 using Dal.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Quartz;
 using UpDownCryptorollBackend.Filters;

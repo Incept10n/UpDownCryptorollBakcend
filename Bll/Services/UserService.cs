@@ -39,22 +39,37 @@ public class UserService(
         string token = jwtTokenManager.GenerateJwtToken(newUser);
         return new UserWithJwtTokenDto
         {
-            UserDto = mapper.Map<UserDto>(newUser),
+            User = mapper.Map<UserDto>(newUser),
             JwtToken = token,
         };
     }
 
-    public void ChangeUserInfo(string currentUsername, UserChangeInfoDto userChangeInfoDto)
+    public string ChangeUserInfo(string currentUsername, UserChangeInfoDto userChangeInfoDto)
     {
         var user = GetUserByName(currentUsername);
         
         rewardsService.CalculateUserLoggedInReward(user);
 
-        user.Name = userChangeInfoDto.Name ?? user.Name;
-        user.Password = BCrypt.Net.BCrypt.HashPassword(userChangeInfoDto.Password) ?? user.Password;
-        user.WalletAddress = userChangeInfoDto.WalletAddress ?? user.WalletAddress;
+        if (userChangeInfoDto.Name is not null)
+        {
+            var existingUser = applicationDbContext.Users.FirstOrDefault(u => u.Name == userChangeInfoDto.Name);
 
+            if (existingUser is not null)
+            {
+                throw new UserAlreadyExistsException($"user with name {userChangeInfoDto.Name} already exists");
+            }
+            
+            user.Name = userChangeInfoDto.Name;
+        } 
+        
+        user.Password = userChangeInfoDto.Password is not null 
+            ? BCrypt.Net.BCrypt.HashPassword(userChangeInfoDto.Password) 
+            : user.Password;
+        user.WalletAddress = userChangeInfoDto.WalletAddress ?? user.WalletAddress;
+        
         applicationDbContext.SaveChanges();
+        
+        return jwtTokenManager.GenerateJwtToken(user);
     }
     
     public void CollectMatch(string username)
@@ -83,7 +98,7 @@ public class UserService(
         
         return new UserWithJwtTokenDto
         {
-            UserDto = mapper.Map<UserDto>(user),
+            User = mapper.Map<UserDto>(user),
             JwtToken = token,
         };
     }

@@ -27,9 +27,9 @@ public class UserController(
     [HttpPut]
     public IActionResult ChangeUserInfo(string username, UserChangeInfoModel userChangeInfoModel)
     {
-        userService.ChangeUserInfo(username, mapper.Map<UserChangeInfoDto>(userChangeInfoModel));
+        var newToken = userService.ChangeUserInfo(username, mapper.Map<UserChangeInfoDto>(userChangeInfoModel));
 
-        return Ok();
+        return Ok(new { NewToken = newToken });
     }
 
     [HttpPost("collectLastMatch")]
