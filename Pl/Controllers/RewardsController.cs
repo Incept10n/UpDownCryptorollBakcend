@@ -16,15 +16,15 @@ public class RewardsController(
     IMapper mapper) : ControllerBase
 {
     [HttpGet("dailyRewardStatus")]
-    public IActionResult GetDailyRewardStatus(string walletAddress)
+    public IActionResult GetDailyRewardStatus(string username)
     {
-        return Ok(mapper.Map<RewardStatusModel>(rewardsService.GetRewardStatus(walletAddress)));
+        return Ok(mapper.Map<RewardStatusModel>(rewardsService.GetRewardStatus(username)));
     }
 
     [HttpPost("collectDailyReward")]
-    public IActionResult CollectReward(string walletAddress)
+    public IActionResult CollectReward(string username)
     {
-        rewardsService.CollectReward(walletAddress);
+        rewardsService.CollectReward(username);
         
         return Ok();
     }

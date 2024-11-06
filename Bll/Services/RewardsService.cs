@@ -1,48 +1,12 @@
 using Bll.Dtos;
 using Bll.Exceptions;
 using Dal.DatabaseContext;
-using Dal.Entities;
 using Dal.Entities.User;
 
 namespace Bll.Services;
 
 public class RewardsService(ApplicationDbContext applicationDbContext)
 {
-    public void CalculateUserLoggedInReward(string walletAddress)
-    {
-        var user = applicationDbContext.Users.FirstOrDefault(user => user.WalletAddress == walletAddress);
-
-        if (user is null)
-        {
-            throw new UserNotFoundException($"user with wallet address: {walletAddress} was not found");
-        }
-
-        var newloginTime = DateTimeOffset.Now.ToUniversalTime();
-
-        user.LastLoginTime = newloginTime;
-
-        if ((user.LastLoginTime - user.LastRewardedTime) > TimeSpan.FromHours(48))
-        {
-            user.LastRewardedTime = newloginTime;
-            user.LoginStreakCount = 1;
-            user.IsDailyRewardCollected = false;
-        }
-        else if (user.LastLoginTime - user.LastRewardedTime > TimeSpan.FromHours(24)
-                 && user.LastLoginTime - user.LastRewardedTime < TimeSpan.FromHours(48))
-        {
-            user.LastRewardedTime = newloginTime;
-            user.LoginStreakCount += 1;
-            user.IsDailyRewardCollected = false;
-        }
-        else
-        {
-            user.LastRewardedTime = newloginTime;
-        }
-
-        applicationDbContext.SaveChanges();
-    }
-    
-    
     public void CalculateUserLoggedInReward(User user)
     {
         var newloginTime = DateTimeOffset.Now.ToUniversalTime();
@@ -66,13 +30,13 @@ public class RewardsService(ApplicationDbContext applicationDbContext)
         applicationDbContext.SaveChanges();
     }
     
-    public RewardStatusDto GetRewardStatus(string walletAddress)
+    public RewardStatusDto GetRewardStatus(string username)
     {
-        var user = applicationDbContext.Users.FirstOrDefault(user => user.WalletAddress == walletAddress);
+        var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == username);
 
         if (user is null)
         {
-            throw new UserNotFoundException($"user with wallet address: {walletAddress} was not found");
+            throw new UserNotFoundException($"user with name: {username} was not found");
         }
         
         CalculateUserLoggedInReward(user);
@@ -87,17 +51,24 @@ public class RewardsService(ApplicationDbContext applicationDbContext)
         };
     }
 
-    public void CollectReward(string walletAddress)
+    public void CollectReward(string username)
     {
-        var user = applicationDbContext.Users.FirstOrDefault(user => user.WalletAddress == walletAddress);
+        var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == username);
 
         if (user is null)
         {
-            throw new UserNotFoundException($"user with wallet address: {walletAddress} was not found");
+            throw new UserNotFoundException($"user with name: {username} was not found");
         }
 
         user.IsDailyRewardCollected = true;
+        
+        user.CurrentBalance += CalculateDailyReward(user.LoginStreakCount);
 
         applicationDbContext.SaveChanges();
+    }
+
+    private int CalculateDailyReward(int loginStreakCount)
+    {
+        return 200 + (loginStreakCount - 1) * 60;
     }
 }
