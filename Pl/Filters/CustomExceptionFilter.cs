@@ -19,6 +19,9 @@ public class CustomExceptionFilter : IExceptionFilter
             UserNotFoundException => StatusCodes.Status404NotFound,
             WrongPredictionTimeframeException => StatusCodes.Status400BadRequest,
             IncorrectUsernameOrPassword => StatusCodes.Status401Unauthorized,
+            InvalidReferralSalt => StatusCodes.Status400BadRequest,
+            UserCannotVisitHisOwnReferralLink => StatusCodes.Status400BadRequest,
+            UserAlreadyVisitedSomeoneElseReferralLinkException => StatusCodes.Status409Conflict,
             _ => StatusCodes.Status500InternalServerError
         };
 

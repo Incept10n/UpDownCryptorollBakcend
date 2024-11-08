@@ -1,5 +1,6 @@
 using Bll.Managers;
 using Bll.Services;
+using Dal.Entities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bll.Extensions;
@@ -16,5 +17,6 @@ public static class ServiceCollectionExtension
         serviceCollection.AddScoped<RewardsService>();
         serviceCollection.AddScoped<RewardTaskService>();
         serviceCollection.AddScoped<JwtTokenManager>();
+        serviceCollection.AddScoped<ReferralService>();
     }
 }

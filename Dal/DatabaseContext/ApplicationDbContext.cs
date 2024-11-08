@@ -16,6 +16,7 @@ public class ApplicationDbContext : DbContext
     
     public DbSet<UserTask> UserTasks { get; set; }
     public DbSet<RewardTask> RewardTasks { get; set; }
+    public DbSet<Referral> Referrals { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -34,5 +35,9 @@ public class ApplicationDbContext : DbContext
             new RewardTask {Id = 5, Name = "Read whitepaper", Reward = 1000},
             new RewardTask {Id = 6, Name = "Complete a quiz", Reward = 3900}
         );
+
+        modelBuilder.Entity<Referral>()
+            .HasIndex(r => r.ReferralSalt)
+            .IsUnique();
     }
 }
