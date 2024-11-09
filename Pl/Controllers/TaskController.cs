@@ -19,7 +19,7 @@ public class TaskController(
     [HttpGet]
     public IActionResult GetAllTasks(string username)
     {
-        return Ok(rewardTaskService.GetAllTasks(username).Select(mapper.Map<RewardTaskDto>));
+        return Ok(rewardTaskService.GetAllTasks(username));
     }
 
     [HttpPost]

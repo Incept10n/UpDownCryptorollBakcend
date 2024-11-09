@@ -1,3 +1,4 @@
+using Bll.Dtos.AdditionalInfo;
 using Bll.Dtos.Tasks;
 using Bll.Exceptions;
 using Dal.DatabaseContext;
@@ -11,7 +12,7 @@ public class RewardTaskService(
     ApplicationDbContext applicationDbContext,
     UserService userService)
 {
-    public List<RewardTaskDto> GetAllTasks(string username)
+    public RewardTaskWithAdditionalInfo GetAllTasks(string username)
     {
         var tasks = applicationDbContext.RewardTasks.ToList();
         var user = userService.GetUserByName(username);
@@ -34,8 +35,40 @@ public class RewardTaskService(
         }
 
         applicationDbContext.SaveChanges();
+
+        var userReferral = applicationDbContext.Referrals.FirstOrDefault(r => r.UserId == user.Id);
+        var additionalInfo = new List<AdditionalInfoDto>();
+
+        if (userReferral is null)
+        {
+            additionalInfo.Add(new AdditionalInfoDto
+            {
+                TaskId = 4,
+                AdditionalInfo = new
+                {
+                    FriendsInvited = 0,
+                }
+            });
+        }
+        else
+        {
+            additionalInfo.Add(new AdditionalInfoDto
+            {
+                TaskId = 4,
+                AdditionalInfo = new
+                {
+                    FriendsInvited = userReferral.FriendsInvited,
+                }
+            });
+        }
         
-        return GetTasksWithStatuses(tasks, userTasks).OrderBy(task => task.Id).ToList();
+        var tasksResponse= GetTasksWithStatuses(tasks, userTasks).OrderBy(task => task.Id).ToList();
+
+        return new RewardTaskWithAdditionalInfo
+        {
+            Tasks = tasksResponse,
+            AdditionalInfo = additionalInfo,
+        };
     }
 
     public void ChangeTaskStatus(string username, RewardTaskChangeDto rewardTaskChangeDto)
