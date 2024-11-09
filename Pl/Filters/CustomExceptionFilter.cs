@@ -1,4 +1,5 @@
 using Bll.Exceptions;
+using Bll.Exceptions.QuizExceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -22,6 +23,7 @@ public class CustomExceptionFilter : IExceptionFilter
             InvalidReferralSalt => StatusCodes.Status400BadRequest,
             UserCannotVisitHisOwnReferralLink => StatusCodes.Status400BadRequest,
             UserAlreadyVisitedSomeoneElseReferralLinkException => StatusCodes.Status409Conflict,
+            InvalidQuizAnswersModel => StatusCodes.Status400BadRequest,
             _ => StatusCodes.Status500InternalServerError
         };
 

@@ -7,6 +7,7 @@ using Dal.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Quartz;
+using UpDownCryptorollBackend.Extensions;
 using UpDownCryptorollBackend.Filters;
 using UpDownCryptorollBackend.MapperConfiguration;
 
@@ -45,6 +46,7 @@ builder.Services.AddQuartz();
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = false);
 
 builder.Services.AddBll();
+builder.Services.AddPl();
 
 builder.Services.AddAuthentication(options =>
 {

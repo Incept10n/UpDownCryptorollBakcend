@@ -7,7 +7,7 @@ namespace Bll.Extensions;
 
 public static class ServiceCollectionExtension
 {
-    public static void AddBll(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddBll(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<UserService>();
         serviceCollection.AddScoped<MatchService>();
@@ -18,5 +18,8 @@ public static class ServiceCollectionExtension
         serviceCollection.AddScoped<RewardTaskService>();
         serviceCollection.AddScoped<JwtTokenManager>();
         serviceCollection.AddScoped<ReferralService>();
+        serviceCollection.AddScoped<QuizService>();
+
+        return serviceCollection;
     }
 }

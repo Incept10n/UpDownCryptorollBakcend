@@ -17,6 +17,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<UserTask> UserTasks { get; set; }
     public DbSet<RewardTask> RewardTasks { get; set; }
     public DbSet<Referral> Referrals { get; set; }
+    public DbSet<Quiz> Quiz { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,7 +32,7 @@ public class ApplicationDbContext : DbContext
             new RewardTask {Id = 1, Name = "Subscribe to telegram", Reward = 1500},
             new RewardTask {Id = 2, Name = "Subscribe to X", Reward = 1500},
             new RewardTask {Id = 3, Name = "Subscribe to VK", Reward = 1500},
-            new RewardTask {Id = 4, Name = "Invite a friend", Reward = 1000},
+            new RewardTask {Id = 4, Name = "Invite a friend", Reward = 5000},
             new RewardTask {Id = 5, Name = "Read whitepaper", Reward = 1000},
             new RewardTask {Id = 6, Name = "Complete a quiz", Reward = 3900}
         );
@@ -39,5 +40,12 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Referral>()
             .HasIndex(r => r.ReferralSalt)
             .IsUnique();
+
+        modelBuilder.Entity<Quiz>().HasData(
+            new Quiz { Id = 1, CorrectAnswer = 4 },
+            new Quiz { Id = 2, CorrectAnswer = 4 },
+            new Quiz { Id = 3, CorrectAnswer = 2 },
+            new Quiz { Id = 4, CorrectAnswer = 2 },
+            new Quiz { Id = 5, CorrectAnswer = 2 });
     }
 }
