@@ -51,6 +51,13 @@ public class QuizService(
 
         if (quizAnswerResponseDto.IsQuizCompleted)
         {
+            var task = rewardTaskService.GetAllTasks(username).Tasks.FirstOrDefault(task => task.Id == 6);
+
+            if (task?.Status == RewardTaskStatus.Completed)
+            {
+                return quizAnswerResponseDto;
+            }
+            
             rewardTaskService.ChangeTaskStatus(username, new RewardTaskChangeDto
             {
                 TaskId = 6,
