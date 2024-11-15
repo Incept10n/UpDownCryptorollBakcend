@@ -70,10 +70,12 @@ public class MatchService(
     {
         var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == username);
 
+        var currentMatch = GetCurrentMatch(username);
+
         if (user is null) throw new UserNotFoundException($"user with name {username} was not found");
 
         return applicationDbContext.Matches
-            .Where(match => match.User == user)
+            .Where(match => match.User == user && match.Id != currentMatch.Id)
             .OrderByDescending(match => match.EntryTime)
             .Skip(offset)
             .Take(limit)

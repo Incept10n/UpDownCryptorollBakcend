@@ -3,15 +3,15 @@ using System.Text.Json.Serialization;
 using Bll.Extensions;
 using Bll.MapperConfiguration;
 using Bll.Services;
+using Dal.DatabaseContext;
 using Dal.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Quartz;
 using UpDownCryptorollBackend.Extensions;
 using UpDownCryptorollBackend.Filters;
 using UpDownCryptorollBackend.MapperConfiguration;
-
-// TODO (FIX): check for current match and dissallow entering another match when there is one in progress 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,15 +32,19 @@ builder.Services.AddApplicationDbContext(connectionString);
 builder.Services.AddAutoMapper(typeof(BllMapperProfile), typeof(PlMapperProfile));
 
 builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins", b =>
     {
-        options.AddPolicy("AllowAll",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin()
-                               .AllowAnyMethod()
-                               .AllowAnyHeader();
-                    });
+        b.WithOrigins(
+                "http://172.27.33.20:3000",
+                "http://localhost:3000",
+                "https://cryptoroll.su",
+                "http://cryptoroll.su",
+                Environment.GetEnvironmentVariable("FRONTEND_URL") ?? string.Empty)
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
+});
 
 builder.Services.AddQuartz();
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = false);
@@ -66,10 +70,13 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
+// Apply migrations at startup
 using (var scope = app.Services.CreateScope())
 {
-    var jobScheduler = scope.ServiceProvider.GetRequiredService<JobScheduleService>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await dbContext.Database.MigrateAsync();
 
+    var jobScheduler = scope.ServiceProvider.GetRequiredService<JobScheduleService>();
     await jobScheduler.SetUpdatingLivePrice();
 }
 
@@ -78,6 +85,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-app.UseCors("AllowAll");
+app.UseCors("AllowSpecificOrigins");
 
 app.Run();
