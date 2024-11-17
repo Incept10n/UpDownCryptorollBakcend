@@ -37,6 +37,7 @@ builder.Services.AddCors(options =>
     {
         b.WithOrigins(
                 "http://172.27.33.20:3000",
+                "http://172.27.33.20:5173",
                 "http://localhost:3000",
                 "https://cryptoroll.su",
                 "http://cryptoroll.su",

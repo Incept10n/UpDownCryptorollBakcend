@@ -70,7 +70,7 @@ public class MatchService(
     {
         var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == username);
 
-        var currentMatch = GetCurrentMatch(username);
+        var currentMatch = GetCurrentMatch(username, true);
 
         if (user is null) throw new UserNotFoundException($"user with name {username} was not found");
 
@@ -83,7 +83,7 @@ public class MatchService(
             .ToList();
     }
 
-    public CurrentMatchDto GetCurrentMatch(string username)
+    public CurrentMatchDto GetCurrentMatch(string username, bool returnDtoWithNotExistentIdIfNotInMatch = false)
     {
         var user = applicationDbContext.Users.FirstOrDefault(user => user.Name == username);
 
@@ -91,12 +91,24 @@ public class MatchService(
             throw new UserNotFoundException($"user with username {username} was not found");
 
         if (user.CurrentMatchId is null)
+        {
+            if (returnDtoWithNotExistentIdIfNotInMatch)
+            {
+                return new CurrentMatchDto
+                {
+                    Id = -99,
+                };
+            }
+            
             throw new MatchNotFoundException($"user with username {username} is not currently in a match");
+        }
 
         var currentMatch = applicationDbContext.Matches.FirstOrDefault(match => match.Id == user.CurrentMatchId);
 
         if (currentMatch is null)
+        {
             throw new MatchNotFoundException($"match with id {user.CurrentMatchId} was not found");
+        }
         
         var dailyBonus = 1f + 0.3f * user.LoginStreakCount;
         var timeFrameMultipliers = new Dictionary<TimeSpan, float>

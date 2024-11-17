@@ -12,6 +12,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
   updown-cryptoroll-backend:
+    # image: viox1x/updown-cryptoroll-backend:latest
     image: updown-cryptoroll-backend:latest
     build:
       context: .
@@ -19,30 +20,36 @@ services:
     environment:
       - DATABASE_CONNECTION=Host=postgres-db;Database=UpDown;Username=viox;Password=2143658790
       - JWT_SECRET=b3f32be97a772f5fee317af425474e46a8490a35aaa2dc58131ede774d853d73
-      - FRONTEND_URL=http://localhost:3000 # NEED TO CHANGE TO PROPER URL
+      # - FRONTEND_URL=http://localhost:3000 # NEED TO CHANGE TO PROPER URL
+      - FRONTEND_URL=https://cryptoroll.su # NEED TO CHANGE TO PROPER URL
     ports:
       - "5000:8080"
     depends_on:
       - postgres-db
 
   frontend:
+     # image: viox1x/updown-cryptoroll-frontend:latest
      image: updown-cryptoroll-frontend:latest
      build:
        context: ../../js/UpDownCryptorollFrontend
        dockerfile: Dockerfile
        args:
-          VITE_CURRENT_HOST: http://localhost:3000 # REPLACE WITH YOUR ACTUAL URL
-          VITE_BACKEND_URL: http://localhost:5000  # REPLACE WITH YOUR ACTUAL URL
+          # VITE_CURRENT_HOST: http://localhost:3000 # REPLACE WITH YOUR ACTUAL URL
+          # VITE_BACKEND_URL: http://localhost:5000  # REPLACE WITH YOUR ACTUAL URL
+        
+          VITE_CURRENT_HOST: https://cryptoroll.su # REPLACE WITH YOUR ACTUAL URL
+          VITE_BACKEND_URL: https://cryptoroll.su/api  # REPLACE WITH YOUR ACTUAL URL
 
           # remove info and then forward the request to frontend-about-page container
-          # VITE_LANDING_PAGE_LINK: https://cryptoroll.su/info # REPLACE WITH YOUR ACTUAL URL
-          VITE_LANDING_PAGE_LINK: http://localhost:3001 # REPLACE WITH YOUR ACTUAL URL
+          VITE_LANDING_PAGE_LINK: https://cryptoroll.su/landing # REPLACE WITH YOUR ACTUAL URL
+          # VITE_LANDING_PAGE_LINK: http://localhost:3001 # REPLACE WITH YOUR ACTUAL URL
      ports:
        - "3000:80"
      depends_on:
        - updown-cryptoroll-backend
 
   frontend-about-page:
+     # image: viox1x/updown-cryptoroll-frontend-about-page:latest
      image: updown-cryptoroll-frontend-about-page:latest
      build:
        context: ../../js/cryptorollLandingPage
