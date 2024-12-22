@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  postgres-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: viox
+      POSTGRES_PASSWORD: 2143658790
+      POSTGRES_DB: UpDown
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  updown-cryptoroll-backend:
+    # image: viox1x/updown-cryptoroll-backend:latest
+    image: incept1on999/cryptoroll:back
+    environment:
+      - DATABASE_CONNECTION=Host=postgres-db;Database=UpDown;Username=viox;Password=2143658790
+      - JWT_SECRET=b3f32be97a772f5fee317af425474e46a8490a35aaa2dc58131ede774d853d73
+      # - FRONTEND_URL=http://localhost:3000 # NEED TO CHANGE TO PROPER URL
+      - FRONTEND_URL=https://cryptoroll.su # NEED TO CHANGE TO PROPER URL
+    ports:
+      - "5000:8080"
+    depends_on:
+      - postgres-db
+
+  frontend:
+     # image: viox1x/updown-cryptoroll-frontend:latest
+     image: incept1on999/cryptoroll:front
+    #  build:
+    #    context: ../../js/UpDownCryptorollFrontend
+    #    dockerfile: Dockerfile
+    #    args:
+    #       # VITE_CURRENT_HOST: http://localhost:3000 # REPLACE WITH YOUR ACTUAL URL
+    #       # VITE_BACKEND_URL: http://localhost:5000  # REPLACE WITH YOUR ACTUAL URL
+        
+    #       VITE_CURRENT_HOST: https://cryptoroll.su # REPLACE WITH YOUR ACTUAL URL
+    #       VITE_BACKEND_URL: https://cryptoroll.su/api  # REPLACE WITH YOUR ACTUAL URL
+
+    #       # remove info and then forward the request to frontend-about-page container
+    #       VITE_LANDING_PAGE_LINK: https://cryptoroll.su/landing # REPLACE WITH YOUR ACTUAL URL
+    #       # VITE_LANDING_PAGE_LINK: http://localhost:3001 # REPLACE WITH YOUR ACTUAL URL
+     ports:
+       - "3000:80"
+     depends_on:
+       - updown-cryptoroll-backend
+
+  frontend-about-page:
+     # image: viox1x/updown-cryptoroll-frontend-about-page:latest
+     image: incept1on999/cryptoroll:about
+    #  build:
+    #    context: ../../js/cryptorollLandingPage
+    #    dockerfile: Dockerfile
+     ports:
+       - "3001:80"
+     depends_on:
+       - updown-cryptoroll-backend
+
+volumes:
+  postgres-data:

@@ -1,0 +1,51 @@
+name: deploy back
+
+on:
+  workflow_run:
+    workflows:
+      - build back image
+    types:
+      - completed
+
+  workflow_dispatch:
+
+jobs:
+  deploy_to_server:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout to repo
+        uses: actions/checkout@v4
+
+      - name: SSH and run commands
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # Reference the private key stored in GitHub Secrets
+          SUDO_PASSWORD_SERVER: ${{ secrets.SUDO_PASSWORD_SERVER }}  # Reference the sudo password stored in GitHub Secrets
+
+        run: |
+          echo "$PRIVATE_KEY" > private_key.pem # Write the private key to a file
+          chmod 600 private_key.pem # Set the appropriate permissions for the key file
+
+          scp -o StrictHostKeyChecking=no -i private_key.pem -P 8888 ./docker-compose.yml cryptoadmin@188.243.207.170:/home/cryptoadmin/
+
+          # Establish an SSH connection and execute commands on the remote server
+          ssh -o StrictHostKeyChecking=no -i private_key.pem -t cryptoadmin@188.243.207.170 -p 8888 <<EOF
+            # Your server commands go here. Replace these commands with those relevant to your project.
+
+
+            echo "$SUDO_PASSWORD_SERVER" | sudo -S docker-compose up -d
+
+            echo "$SUDO_PASSWORD_SERVER" | sudo -S docker stop cryptoadmin-updown-cryptoroll-backend-1
+            echo "$SUDO_PASSWORD_SERVER" | sudo -S docker rm cryptoadmin-updown-cryptoroll-backend-1
+            echo "$SUDO_PASSWORD_SERVER" | sudo -S docker rmi incept1on999/cryptoroll:back
+
+            echo "$SUDO_PASSWORD_SERVER" | sudo -S docker-compose up -d
+
+          EOF
+
+          rm -f private_key.pem # Remove the private key file after use for security
+    permissions:
+      contents: read
+      actions: write
+      id-token: write
