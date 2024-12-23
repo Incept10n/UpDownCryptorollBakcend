@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace UpDownCryptorollBackend.Controllers;
 
 [ApiController]
-[Route("/livePrice")]
+[Route("api/livePrice")]
 public class PriceController(CurrentPriceService currentPriceService) : ControllerBase
 {
     [HttpGet]

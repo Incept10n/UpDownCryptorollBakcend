@@ -8,7 +8,7 @@ using UpDownCryptorollBackend.Models;
 namespace UpDownCryptorollBackend.Controllers;
 
 [ApiController]
-[Route("/rewards")]
+[Route("api/rewards")]
 [Authorize]
 [UsernameAuthorization]
 public class RewardsController(

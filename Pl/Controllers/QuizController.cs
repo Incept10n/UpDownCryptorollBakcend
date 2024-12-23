@@ -8,7 +8,7 @@ using UpDownCryptorollBackend.Models.Quiz;
 namespace UpDownCryptorollBackend.Controllers;
 
 [ApiController]
-[Route("quiz")]
+[Route("api/quiz")]
 [Authorize]
 [UsernameAuthorization]
 public class QuizController(

@@ -6,7 +6,7 @@ using UpDownCryptorollBackend.Filters.FilterAttributes;
 namespace UpDownCryptorollBackend.Controllers;
 
 [ApiController]
-[Route("/referralLinks")]
+[Route("api/referralLinks")]
 [Authorize]
 public class ReferralLinkController(
     ReferralService referralService) : ControllerBase

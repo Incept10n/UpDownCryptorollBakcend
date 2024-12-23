@@ -9,7 +9,7 @@ using UpDownCryptorollBackend.Models;
 namespace UpDownCryptorollBackend.Controllers;
 
 [ApiController]
-[Route("/match")]
+[Route("api/match")]
 [Authorize]
 [UsernameAuthorization]
 public class MatchController(

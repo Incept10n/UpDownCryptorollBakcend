@@ -7,6 +7,7 @@ using UpDownCryptorollBackend.Models.Users;
 namespace UpDownCryptorollBackend.Controllers;
 
 [ApiController]
+[Route("api")]
 public class AuthController(
     UserService userService,
     IMapper mapper) : ControllerBase

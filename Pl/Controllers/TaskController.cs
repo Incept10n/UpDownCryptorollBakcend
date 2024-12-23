@@ -9,7 +9,7 @@ using UpDownCryptorollBackend.Models.Tasks;
 namespace UpDownCryptorollBackend.Controllers;
 
 [ApiController]
-[Route("/tasks")]
+[Route("api/tasks")]
 [Authorize]
 [UsernameAuthorization]
 public class TaskController(

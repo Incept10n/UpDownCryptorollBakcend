@@ -9,7 +9,7 @@ using UpDownCryptorollBackend.Models.Users;
 namespace UpDownCryptorollBackend.Controllers;
 
 [ApiController]
-[Route("/user")]
+[Route("api/user")]
 [Authorize]
 [UsernameAuthorization]
 public class UserController(
